@@ -30,7 +30,7 @@ namespace MagicVillageDash.World
         public ChunkFactory OwnerFactory { get; internal set; }
 
 
-        void OnEnable()
+        void Awake()
         {
             
             if(coinFactory == null) coinFactory = FindAnyObjectByType<CoinFactory>();

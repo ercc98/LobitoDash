@@ -1,14 +1,15 @@
 using UnityEngine;
 using ErccDev.Foundation.Core.Factories;
+using System;
 
 namespace MagicVillageDash.World
 {
+    [Serializable]
     public sealed class ChunkFactory : Factory<ChunkRoot>
     {
-        [SerializeField] private GameObject worldMover;
         public override ChunkRoot Spawn(Vector3 position, Quaternion rotation, Transform parent = null)
         {
-            var chunk = base.Spawn(position, rotation, worldMover.transform);
+            var chunk = base.Spawn(position, rotation, parent.transform);
             return chunk;
         }
 
