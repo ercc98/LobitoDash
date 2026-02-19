@@ -5,7 +5,7 @@ namespace MagicVillageDash.Character.CharacterAnimator
     public class CharacterAnimatorController : MonoBehaviour, IMovementAnimator, IDeathAnimator, IExpressionAnimator
     {
         [SerializeField] private Animator animatorController;
-        [SerializeField] public Animator AnimatorController { private get => animatorController; set => animatorController = value; }
+        public Animator AnimatorController { private get => animatorController; set => animatorController = value; }
         
         bool IsJumping()
         {
