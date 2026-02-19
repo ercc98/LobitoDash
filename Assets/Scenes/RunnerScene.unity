@@ -4893,6 +4893,7 @@ MonoBehaviour:
   turorialManagerProvider: {fileID: 555422358}
   tutorialContextBuilderProvider: {fileID: 2027827473}
   chunkSpawnerProvider: {fileID: 628242069}
+  enemyspawnPermissionProvider: {fileID: 628242069}
   swipeInputProvider: {fileID: 1192672711}
   runnerInputControllerProvider: {fileID: 1335652204}
   playerProfileData: {fileID: 11400000, guid: 9798c78fe431dfc4984197d9a5ee04ba, type: 2}
@@ -29069,8 +29070,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Input.RunnerSwipeController
   playerControllerProvider: {fileID: 1335652204}
-  swipeInputProvider: {fileID: 1192672711}
-  tapTriggersJump: 0
+  inputProvider: {fileID: 1192672711}
 --- !u!114 &1335652202
 MonoBehaviour:
   m_ObjectHideFlags: 0

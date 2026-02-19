@@ -1,4 +1,5 @@
 using ErccDev.Foundation.Core.Tutorial;
+using ErccDev.Foundation.Input;
 using ErccDev.Foundation.Input.Swipe;
 using MagicVillageDash.Character;
 using UnityEngine;
@@ -8,37 +9,20 @@ namespace MagicVillageDash.Tutorial
     [CreateAssetMenu(menuName = "MagicVillageDash/Tutorial/Conditions/Swipe")]
     public class SwipeCondition : TutorialCondition
     {
-        public enum SwipeDirection { Left, Right, Up, Down, Tap }
+        public enum SwipeDirection { Left, Right, Up, Down, Tap, StartTap, EndTap }
         public SwipeDirection requiredSwipe;
         //[SerializeField] private SwipeInputSystem swipeInputProvider;
         private ISwipeInput swipeInput;
+        private ITouchInput touchInput;
         private IMovementController movementController;
         private bool completed;
-        /*
-        public override void Initialize(TutorialContext context)
-        {
-            swipeInput = context?.SwipeInput;
-            movementController = context?.PlayerMovement;
-            //movementController = FindAnyObjectByType<PlayerController>(FindObjectsInactive.Exclude);
-            //swipeInput = swipeInputProvider as ISwipeInput ?? FindAnyObjectByType<SwipeInputSystem>(FindObjectsInactive.Exclude);;
-            //swipeInput = FindAnyObjectByType<SwipeInputSystem>(FindObjectsInactive.Exclude);
-            completed = false;
-
-            switch (requiredSwipe)
-            {
-                case SwipeDirection.Left: swipeInput.SwipeLeft += OnSwipeLeft; break;
-                case SwipeDirection.Right: swipeInput.SwipeRight += OnSwipeRight; break;
-                case SwipeDirection.Up: swipeInput.SwipeUp += OnSwipeUp; break;
-                case SwipeDirection.Down: swipeInput.SwipeDown += OnSwipeDown; break;
-                case SwipeDirection.Tap: swipeInput.Tap += OnTap; break;
-            }
-        }
-    */
+        
         public override void Initialize(ITutorialContext context)
         {
             completed = false;
 
             swipeInput = context?.Get<ISwipeInput>();
+            touchInput = context?.Get<ITouchInput>();
             movementController = context?.Get<IMovementController>();
 
 #if UNITY_EDITOR
@@ -54,7 +38,9 @@ namespace MagicVillageDash.Tutorial
                 case SwipeDirection.Right: swipeInput.SwipeRight += OnSwipeRight; break;
                 case SwipeDirection.Up: swipeInput.SwipeUp += OnSwipeUp; break;
                 case SwipeDirection.Down: swipeInput.SwipeDown += OnSwipeDown; break;
-                case SwipeDirection.Tap: swipeInput.Tap += OnTap; break;
+                //case SwipeDirection.Tap: touchInput.Tap += OnTap; break;
+                case SwipeDirection.StartTap: touchInput.StartTouch += OnTouchStart; break;
+                case SwipeDirection.EndTap: touchInput.EndTouch += OnTouchEnd; break;
             }
         }
 
@@ -87,6 +73,17 @@ namespace MagicVillageDash.Tutorial
             movementController.Jump();
         }
 
+        public void OnTouchStart()
+        {
+            OnSwipe(requiredSwipe);
+            movementController.Defend(true);
+        }
+        public void OnTouchEnd()
+        {
+            OnSwipe(requiredSwipe);
+            movementController.Defend(false);
+        }
+
 
         private void OnSwipe(SwipeDirection dir)
         {
@@ -105,6 +102,8 @@ namespace MagicVillageDash.Tutorial
             swipeInput.SwipeUp -= OnSwipeUp;
             swipeInput.SwipeDown -= OnSwipeDown;
             swipeInput.Tap -= OnTap;
+            touchInput.StartTouch -= OnTouchStart;
+            touchInput.EndTouch -= OnTouchEnd;
 
             swipeInput = null;
             movementController = null;

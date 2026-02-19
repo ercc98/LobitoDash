@@ -5,6 +5,7 @@ using MagicVillageDash.Player;
 using ErccDev.Foundation.Core.Gameplay;
 using System;
 using MagicVillageDash.Runner;
+using ErccDev.Foundation.Input;
 
 namespace MagicVillageDash.Input
 {
@@ -13,20 +14,19 @@ namespace MagicVillageDash.Input
     {
         [Header("Providers")]
         [SerializeField] private MonoBehaviour playerControllerProvider;
-        [SerializeField] private MonoBehaviour swipeInputProvider;
+        [SerializeField] private MonoBehaviour inputProvider;
 
         [Header("Options")]
-        [Tooltip("If true, a screen tap will trigger Jump() in addition to SwipeUp.")]
-        [SerializeField] private bool tapTriggersJump = true;
         private IMovementController movementController;
         private ISwipeInput swipeInput;
+        private ITouchInput touchInput;
         private bool active;
         public bool IsActive => active;
-        public bool TapTriggersJump { get => tapTriggersJump; set => tapTriggersJump = value; }
 
         private void Awake()
-        {   
-            swipeInput = swipeInputProvider as ISwipeInput ?? FindAnyObjectByType<SwipeInputSystem>(FindObjectsInactive.Exclude);;
+        {
+            swipeInput = inputProvider as ISwipeInput ?? FindAnyObjectByType<SwipeInputSystem>(FindObjectsInactive.Exclude);
+            touchInput = inputProvider as ITouchInput ?? FindAnyObjectByType<SwipeInputSystem>(FindObjectsInactive.Exclude);
             movementController = playerControllerProvider as IMovementController ?? FindAnyObjectByType<PlayerController>(FindObjectsInactive.Exclude);
         }
 
@@ -51,7 +51,9 @@ namespace MagicVillageDash.Input
         private void OnSwipeRight() => TurnRight();
         private void OnSwipeUp()    => Jump();
         private void OnSwipeDown()  => Crouch(true);
-        private void OnTap()        => Jump();
+        private void OnTap() => Jump();
+        private void OnStartTouch() => Defend(true);
+        private void OnEndTouch() => Defend(false);
 
         public void Activate()
         {
@@ -60,7 +62,9 @@ namespace MagicVillageDash.Input
             swipeInput.SwipeRight += OnSwipeRight;
             swipeInput.SwipeUp += OnSwipeUp;
             swipeInput.SwipeDown += OnSwipeDown;
-            if (tapTriggersJump) swipeInput.Tap += OnTap;
+            //swipeInput.Tap += OnTap;
+            touchInput.StartTouch += OnStartTouch;
+            touchInput.EndTouch += OnEndTouch;
             active = true;
         }
 
@@ -71,7 +75,9 @@ namespace MagicVillageDash.Input
             swipeInput.SwipeRight -= OnSwipeRight;
             swipeInput.SwipeUp -= OnSwipeUp;
             swipeInput.SwipeDown -= OnSwipeDown;
-            if (tapTriggersJump) swipeInput.Tap -= OnTap;
+            //swipeInput.Tap -= OnTap;
+            touchInput.StartTouch -= OnStartTouch;
+            touchInput.EndTouch -= OnEndTouch;
             active = false;
         }
 
@@ -88,6 +94,10 @@ namespace MagicVillageDash.Input
         private void Jump()
         {
             movementController.Jump();
+        }
+        private void Defend(bool isDefending)
+        {
+            movementController.Defend(isDefending);
         }
 
         private void Crouch(bool isCrouching)
