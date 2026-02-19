@@ -8,12 +8,17 @@ namespace MagicVillageDash.Character.CharacterAnimator
         [SerializeField] public Animator AnimatorController { private get => animatorController; set => animatorController = value; }
         
         bool IsJumping()
-    {
-        return animatorController.GetCurrentAnimatorStateInfo(0).IsName("Jump");
-    }
+        {
+            return animatorController.GetCurrentAnimatorStateInfo(0).IsName("Jump");
+        }
         public void Crouch(bool isCrouching)
         {
-            animatorController.SetBool("IsCrouching", isCrouching);
+            //animatorController.SetBool("IsCrouching", isCrouching);
+        }
+
+        public void Defend(bool isDefending)
+        {
+            animatorController.SetBool("IsDefending", isDefending);
         }
 
         public void Jump()

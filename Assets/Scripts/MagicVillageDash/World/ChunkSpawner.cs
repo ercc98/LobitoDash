@@ -1,19 +1,25 @@
+using UnityEngine;
 using System.Collections.Generic;
 using MagicVillageDash.Collectibles;
 using MagicVillageDash.Obstacles;
-using UnityEngine;
+using MagicVillageDash.World.Biomes;
+using System;
+
 
 namespace MagicVillageDash.World
 {
-    public sealed class ChunkSpawner : MonoBehaviour, IChunkSpawnerConfig, IChunkSpawnerRunner
+    public sealed class ChunkSpawner : MonoBehaviour, IChunkSpawnerConfig, IChunkSpawnerRunner, IEnemySpawnPermission
     {
         [Header("Refs")]
         [SerializeField] Transform player;
+        [SerializeField] GameObject worldMover;
         [SerializeField] CoinRailFiller coinRailFiller;
         [SerializeField] ObstacleRailFiller obstacleRailFiller;
-        [SerializeField] private ChunkFactory[] factories;
-        [SerializeField] private ChunkSpawnConfig tutorialConfig;
-        [SerializeField] private ChunkSpawnConfig normalConfig;
+        [SerializeField] CoinFactory coinFactory;
+        [SerializeField] ObstacleFactory obstacleFactory;
+        [SerializeField] MonoBehaviour biomeDirectorProvider; 
+        [SerializeField] ChunkSpawnConfig tutorialConfig;
+        [SerializeField] ChunkSpawnConfig normalConfig;
 
         [Header("Config")]
         [SerializeField] private ChunkSpawnConfig activeConfig;
@@ -23,15 +29,23 @@ namespace MagicVillageDash.World
 
         IChunkFiller coinFiller;
         IChunkFiller obstacleFiller;
+        IBiomeDirector biomeDirector;
 
         bool isSpawning;
 
+        public event Action OnSpawnedChunk;
+
         public bool IsSpawning => isSpawning;
+        public bool CanSpawnEnemies => isSpawning && (active.Count > 0 && active[0].CanSpawnEnemies && active[1].CanSpawnEnemies);
+
 
         void Awake()
         {
             coinFiller = coinRailFiller;
             obstacleFiller = obstacleRailFiller;
+            biomeDirector = biomeDirectorProvider as IBiomeDirector;
+            if (biomeDirector == null)
+                Debug.LogError($"{nameof(ChunkSpawner)}: biomeDirectorProvider must implement IBiomeDirector.");
         }
 
         public void SetConfig(ChunkSpawnConfig config)
@@ -53,11 +67,15 @@ namespace MagicVillageDash.World
         public void StartSpawning()
         {
             if (isSpawning) return;
+            if (biomeDirector == null) return;
+
+            biomeDirector.ResetRun();
 
             isSpawning = true;
             nextSpawnZ = (int)(player.position.z + activeConfig.startAheadDistance);
+
             FillOneAhead(false);
-            nextSpawnZ += (int)chunkLength;
+            nextSpawnZ += Mathf.RoundToInt(chunkLength);
             FillAhead();
             FindAnyObjectByType<CoinRailGenerator>()?.ResetPathAt(player.position.z);
         }
@@ -83,6 +101,7 @@ namespace MagicVillageDash.World
                     active.RemoveAt(0);
                     first.OwnerFactory?.Recycle(first);  // recycle to the same factory
                     FillOneAhead();
+                    OnSpawnedChunk?.Invoke();
                 }
             }
         }
@@ -92,26 +111,42 @@ namespace MagicVillageDash.World
             while (active.Count < activeConfig.keepAhead)
             {
                 FillOneAhead();
-                nextSpawnZ += (int)chunkLength;
+                nextSpawnZ += Mathf.RoundToInt(chunkLength);
             }
             // Adjust nextSpawnZ to account for despawn distance
-            nextSpawnZ = ((int)chunkLength * activeConfig.keepAhead) - (int)activeConfig.despawnBehindDistance;
+            nextSpawnZ = (Mathf.RoundToInt(chunkLength) * activeConfig.keepAhead) - Mathf.RoundToInt(activeConfig.despawnBehindDistance);
         }
 
         ChunkRoot FillOneAhead(bool spawnObstacles = true)
         {
-            var factory = GetRandomFactory();
-            ChunkRoot chunk = factory.Spawn(new Vector3(0f, 0f, nextSpawnZ), Quaternion.identity);
+            if (biomeDirector == null) return null;
 
+
+            // Ask the director what to spawn next
+            bool allowObstacles;
+
+            var factory = biomeDirector.GetNextFactory(out allowObstacles);
+            if (factory == null) return null;
+
+            // If caller wants no obstacles (e.g. first chunk), that wins.
+            bool finalSpawnObstacles = spawnObstacles && allowObstacles;
+
+
+            //var factory = GetRandomFactory();
+
+            ChunkRoot chunk = factory.Spawn(new Vector3(0f, 0f, nextSpawnZ), Quaternion.identity, worldMover.transform);
+            chunk.InjectFactories(coinFactory, obstacleFactory);
             coinFiller.FillChunk(chunk);
-            if(spawnObstacles && chunk.canSpawnObstacles) obstacleFiller.FillChunk(chunk);
+            if (finalSpawnObstacles && chunk.CanSpawnObstacles) obstacleFiller.FillChunk(chunk);
             // Mark the owner factory so we can recycle correctly
             chunk.OwnerFactory = factory;
             chunkLength = chunk.ChunkLength;
             active.Add(chunk);
+
             return chunk;
         }
         
+        /*
         ChunkFactory GetRandomFactory()
         {
             if (factories == null || factories.Length == 0) return null;
@@ -129,6 +164,7 @@ namespace MagicVillageDash.World
 
             return null;            
         }
+        */
 
     }
 }

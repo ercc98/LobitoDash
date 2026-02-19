@@ -14,7 +14,8 @@ namespace MagicVillageDash.World
         private CoinFactory coinFactory;
         private ObstacleFactory obstacleFactory;
         [SerializeField] private float chunkLength = 40f;
-        [SerializeField] public bool canSpawnObstacles = true;
+        [SerializeField] private bool canSpawnObstacles = true;
+        [SerializeField] private bool canSpawnEnemies = true;
 
         public float ChunkLength
         {
@@ -25,17 +26,21 @@ namespace MagicVillageDash.World
         public bool CanSpawnObstacles
         {
             get => canSpawnObstacles;
-            set => canSpawnObstacles = value;
+            private set => canSpawnObstacles = value;
+        }
+
+        public bool CanSpawnEnemies
+        {
+            get => canSpawnEnemies;
+            private set => canSpawnEnemies = value;
         }
         public ChunkFactory OwnerFactory { get; internal set; }
 
 
-        void OnEnable()
+        void Awake()
         {
-            
             if(coinFactory == null) coinFactory = FindAnyObjectByType<CoinFactory>();
             if (obstacleFactory == null) obstacleFactory = FindAnyObjectByType<ObstacleFactory>();
-            
         }
 
         /// <summary>Called by ChunkSpawner right after spawning the chunk.</summary>

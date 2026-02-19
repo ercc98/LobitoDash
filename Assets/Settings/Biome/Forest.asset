@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea01d86eb8e42484faa809f436c214c8, type: 3}
+  m_Name: Forest
+  m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.World.Biomes.BiomeDefinition
+  biomeId: Forest
+  startFactories:
+  - {fileID: 2063522194690597024, guid: 151091cf6b22add40ad5165e99b73fab, type: 3}
+  - {fileID: 7621889947468416342, guid: 50f920b38e2708a408b1d297113d24e2, type: 3}
+  loopFactories:
+  - {fileID: 2063522194690597024, guid: 151091cf6b22add40ad5165e99b73fab, type: 3}
+  - {fileID: 7621889947468416342, guid: 50f920b38e2708a408b1d297113d24e2, type: 3}
+  - {fileID: 4059238129075955435, guid: 1dcd8788f29202946a3bd1cd3f61cd4d, type: 3}
+  - {fileID: 541329068942127197, guid: bfcb7b5a5ad24be4d8e9f610e2c7aa60, type: 3}
+  - {fileID: 2907057456360493560, guid: b693d5bc438b7f947a60b869b019370f, type: 3}
+  minBlockChunks: 3
+  maxBlockChunks: 5
+  transitions:
+  - toBiome: {fileID: 11400000, guid: 9934212e0dd09564abaf4eddf75171ba, type: 2}
+    weight: 0.5
+    connectorFactories: []
+    minConnectorChunks: 0
+    maxConnectorChunks: 0
+  - toBiome: {fileID: 11400000}
+    weight: 0.5
+    connectorFactories: []
+    minConnectorChunks: 0
+    maxConnectorChunks: 0

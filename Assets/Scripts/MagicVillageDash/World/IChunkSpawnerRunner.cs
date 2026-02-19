@@ -1,3 +1,5 @@
+using System;
+
 namespace MagicVillageDash.World
 {
     public interface IChunkSpawnerRunner
@@ -5,5 +7,6 @@ namespace MagicVillageDash.World
         void StartSpawning();
         void StopSpawning();
         bool IsSpawning { get; }
+        event Action OnSpawnedChunk;
     }
 }

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea01d86eb8e42484faa809f436c214c8, type: 3}
+  m_Name: Town
+  m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.World.Biomes.BiomeDefinition
+  biomeId: Town
+  startFactories:
+  - {fileID: 1709339680755144484, guid: 0c47002501c1fb04ba654c4be9fba26c, type: 3}
+  - {fileID: 9048222321619922850, guid: f24be878307a425448f04a26c5d6ff24, type: 3}
+  loopFactories:
+  - {fileID: 4545642376551055716, guid: ad81c93b8fa67d54ca8f86fab1f7dc94, type: 3}
+  - {fileID: 8625593272546526411, guid: ad2fd6b32fe8ca447a6d03acc6b68d63, type: 3}
+  - {fileID: 7531917141109681488, guid: 710367c2333ed9a46bc9f50a3a2d46af, type: 3}
+  - {fileID: 3418595947792289403, guid: f431c9bf9a05bc24593fdd689e1ae1ca, type: 3}
+  - {fileID: 1057978222022738136, guid: 6df065808d3a2ff458a224d610e0541f, type: 3}
+  minBlockChunks: 3
+  maxBlockChunks: 5
+  transitions:
+  - toBiome: {fileID: 11400000, guid: 5686cc2ca24e58349802d96692bef8ca, type: 2}
+    weight: 0.5
+    connectorFactories: []
+    minConnectorChunks: 0
+    maxConnectorChunks: 0
+  - toBiome: {fileID: 11400000}
+    weight: 0.5
+    connectorFactories: []
+    minConnectorChunks: 0
+    maxConnectorChunks: 0

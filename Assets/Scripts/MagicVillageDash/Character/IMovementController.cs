@@ -10,5 +10,6 @@ namespace MagicVillageDash.Character
         void MovingSpeed(float speed);
         void Crouch(bool isCrouching);
         void Jump();
+        void Defend(bool isDefending);
     }
 }

@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using ErccDev.Foundation.Audio;
 using ErccDev.Foundation.Camera;
 using ErccDev.Foundation.Core.Gameplay;
-using ErccDev.Foundation.Core.Save;
 using ErccDev.Foundation.Core.Tutorial;
 using ErccDev.Foundation.Data;
 using ErccDev.Foundation.Input.Swipe;
@@ -36,6 +36,7 @@ namespace MagicVillageDash.Runner
         [SerializeField] private MonoBehaviour turorialManagerProvider;
         [SerializeField] private MonoBehaviour tutorialContextBuilderProvider;
         [SerializeField] private MonoBehaviour chunkSpawnerProvider;
+        [SerializeField] private MonoBehaviour enemyspawnPermissionProvider;
         [SerializeField] private MonoBehaviour swipeInputProvider;      // ISwipeInput
         [SerializeField] private MonoBehaviour runnerInputControllerProvider;
 
@@ -57,6 +58,7 @@ namespace MagicVillageDash.Runner
         ITutorialContextBuilder     tutorialContextBuilder;
         IChunkSpawnerConfig         chunkSpawnerConfig;
         IChunkSpawnerRunner         chunkSpawnerRunner;
+        IEnemySpawnPermission       enemySpawnPermission;
         IRunnerInputController      runnerInputController;
         ISwipeInput                 swipeInput;
 
@@ -65,7 +67,9 @@ namespace MagicVillageDash.Runner
         [SerializeField] private LaneBehavior behavior = LaneBehavior.Swap;
         [SerializeField] private float reactDelay = 0.06f;
         [SerializeField] private bool oneReactionAtATime = true;
+        private bool haveEnemySpawned = false;
         private Coroutine reactionRoutine;
+        private Coroutine enemySpawnRoutine;
 
         void Awake()
         {
@@ -83,6 +87,7 @@ namespace MagicVillageDash.Runner
             tutorialContextBuilder = tutorialContextBuilderProvider as ITutorialContextBuilder ?? tutorialContextBuilderProvider.GetComponent<ITutorialContextBuilder>();            
             chunkSpawnerConfig = chunkSpawnerProvider as IChunkSpawnerConfig ?? chunkSpawnerProvider.GetComponent<IChunkSpawnerConfig>();
             chunkSpawnerRunner = chunkSpawnerProvider as IChunkSpawnerRunner ?? chunkSpawnerProvider.GetComponent<IChunkSpawnerRunner>();
+            enemySpawnPermission = enemyspawnPermissionProvider as IEnemySpawnPermission ?? enemyspawnPermissionProvider.GetComponent<IEnemySpawnPermission>();
             swipeInput = swipeInputProvider as ISwipeInput ?? swipeInputProvider.GetComponent<ISwipeInput>();
         }
 
@@ -91,9 +96,10 @@ namespace MagicVillageDash.Runner
             GameEvents.GameOver += OnGameOver;
             GameEvents.GameStarted += OnGameStarted;
 
+
             if (playerLaneMover != null) playerLaneMover.OnLaneChangeAttempt += OnPlayerAttempt;
-            if (enemySpawner != null) enemySpawner.OnSpawned += OnEnemySpawned;
-            if (enemySpawner != null) enemySpawner.OnStartSpawn += OnEnemySpawnedAttempt;
+            if (enemySpawner != null) enemySpawner.OnSpawnedEnemy += OnEnemySpawned;
+            if (enemySpawner != null) enemySpawner.OnStartSpawnEnemy += OnEnemySpawnedAttempt;
             if (tutorialManager != null) tutorialManager.OnTutorialEnded += OnTutorialEnded;
             if (chunkSpawnerConfig != null)
             {
@@ -108,18 +114,21 @@ namespace MagicVillageDash.Runner
 
         void OnDisable()
         {
+            if (chunkSpawnerRunner != null) chunkSpawnerRunner.OnSpawnedChunk -= OnChunkSpawned;
             if (playerLaneMover != null) playerLaneMover.OnLaneChangeAttempt -= OnPlayerAttempt;
-            if (enemySpawner != null) enemySpawner.OnSpawned -= OnEnemySpawned;
-            if (enemySpawner != null) enemySpawner.OnStartSpawn -= OnEnemySpawnedAttempt;
+            if (enemySpawner != null) enemySpawner.OnSpawnedEnemy -= OnEnemySpawned;
+            if (enemySpawner != null) enemySpawner.OnStartSpawnEnemy -= OnEnemySpawnedAttempt;
 
             if (enemyLaneMover != null) enemyLaneMover.OnLaneChangeAttempt -= OnEnemyAttempt;
 
             if (reactionRoutine != null) { StopCoroutine(reactionRoutine); reactionRoutine = null; }
+            if  (enemySpawnRoutine != null) { StopCoroutine(enemySpawnRoutine); enemySpawnRoutine = null; }
 
             if (tutorialManager != null ) tutorialManager.OnTutorialEnded -= OnTutorialEnded;
             GameEvents.GameOver -= OnGameOver;
             GameEvents.GameStarted -= OnGameStarted;
         }
+
 
         #region Events Methods
 
@@ -138,22 +147,32 @@ namespace MagicVillageDash.Runner
             if (playerProfileData.TutorialCompleted)
             {
                 enemySpawner?.Spawn();
+                haveEnemySpawned = true;
                 runnerInputController.Activate();
+                if (chunkSpawnerRunner != null) chunkSpawnerRunner.OnSpawnedChunk += OnChunkSpawned;
             }
             else
             {
                 tutorialManager?.StartTutorial();
             }
-            
+
             chunkSpawnerRunner?.StartSpawning();
+        }
+        private void OnChunkSpawned()
+        {   
+            if (!enemySpawnPermission.CanSpawnEnemies || haveEnemySpawned) return;
+            enemySpawner?.Spawn();
+            haveEnemySpawned = true;
         }
 
         private void OnTutorialEnded()
         {
             enemySpawner?.Spawn();
+            haveEnemySpawned = true;
             runnerInputController.Activate();
             playerProfileData.TutorialCompleted = true;
             GameDataService._instance.SaveAll();
+            if (chunkSpawnerRunner != null) chunkSpawnerRunner.OnSpawnedChunk += OnChunkSpawned;
         }
 
         private void OnGameOver()
@@ -174,17 +193,19 @@ namespace MagicVillageDash.Runner
         {
             enemy.Ondied += OnEnemyDespawned;
             enemyLaneMover = enemy.SelfLaneMover;
-            enemyMovementController = enemy as IMovementController;
+            enemyMovementController = enemy;
             enemyLaneMover.OnLaneChangeAttempt += OnEnemyAttempt;
         }
 
         private void OnEnemyDespawned(EnemyController enemy)
         {
+            haveEnemySpawned = false;
             enemyMovementController = null;
             enemy.Ondied -= OnEnemyDespawned;
             enemyLaneMover.OnLaneChangeAttempt -= OnEnemyAttempt;
             enemyLaneMover = null;
-            enemySpawner?.Spawn();
+            //SpawnEnemy();
+            
         }        
 
         protected override void OnSessionStarted()

@@ -60,7 +60,7 @@ namespace MagicVillageDash.Character
 
         public virtual void Crouch(bool isCrouching)
         {
-            selfLaneMover.Slide();
+            //selfLaneMover.Slide();
             selfMovementAnimator.Crouch(isCrouching);
         }
 
@@ -68,6 +68,11 @@ namespace MagicVillageDash.Character
         {
             selfLaneMover.Jump();
             selfMovementAnimator.Jump();
+        }
+
+        public virtual void Defend(bool isDefending)
+        {
+            selfMovementAnimator.Defend(isDefending);
         }
         public virtual void Idle()
         {

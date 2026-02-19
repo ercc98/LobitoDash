@@ -3,7 +3,6 @@ using UnityEngine;
 using MagicVillageDash.Enemy;
 using ErccDev.Foundation.Core.Gameplay;
 using System;
-using ErccDev.Foundation.Core.Factories;
 using MagicVillageDash.Audio;
 using ErccDev.Foundation.Audio;
 using Random = UnityEngine.Random;
@@ -27,8 +26,8 @@ namespace MagicVillageDash.Enemies
 
         IEnemyFactory enemyFactory;
         private Coroutine respawnRoutine;
-        public event Action<EnemyController> OnSpawned;
-        public event Action<int> OnStartSpawn;
+        public event Action<EnemyController> OnSpawnedEnemy;
+        public event Action<int> OnStartSpawnEnemy;
 
         void Awake()
         {
@@ -49,6 +48,7 @@ namespace MagicVillageDash.Enemies
                 respawnRoutine = null;
             }
         }
+        
         public void Spawn()
         {
             respawnRoutine = StartCoroutine(SpawnEnemyAfterDelay(respawnDelay, Random.Range(0, numberOfLanes)));
@@ -62,8 +62,8 @@ namespace MagicVillageDash.Enemies
             spawnAreaParticleSystem.Play();
             AudioManager.Instance?.Play("SpawnAreaEnemy", SoundCategory.SFX);
             yield return _waitForSeconds1;
-            OnStartSpawn?.Invoke(lane);
-            OnSpawned?.Invoke(Spawn(positionX, lane));
+            OnStartSpawnEnemy?.Invoke(lane);
+            OnSpawnedEnemy?.Invoke(Spawn(positionX, lane));
         }
 
         public EnemyController Spawn(float positionX, int lane)
