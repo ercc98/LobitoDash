@@ -12,4 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27949cd58b5ca140800cd497311fde3, type: 3}
   m_Name: UI
   m_EditorClassIdentifier: ErccDev.Audio::ErccDev.Audio.SoundGroup
-  entries: []
+  entries:
+  - id: Accept
+    clip: {fileID: 8300000, guid: 7582eca8e137a064aa48e7fc96f820cc, type: 3}
+    volume: 0.25
+    volumeJitter: 0
+    pitchJitter: 0
+  - id: Continue
+    clip: {fileID: 8300000, guid: 2c9441cde9b59304e865d3e43b76937e, type: 3}
+    volume: 0.25
+    volumeJitter: 0
+    pitchJitter: 0
+  - id: Back
+    clip: {fileID: 8300000, guid: 6bf4b5b450c10b04d876e9ad9198f882, type: 3}
+    volume: 0.25
+    volumeJitter: 0
+    pitchJitter: 0

@@ -5,62 +5,87 @@ namespace MagicVillageDash.World
     [RequireComponent(typeof(Renderer))]
     public class SimpleURPUVScroll : MonoBehaviour
     {
-        [Header("URP Lit")]
-        [SerializeField] private string textureProperty = "_BaseMap"; // Built-in: "_MainTex"
+        // ── Shader property names (match your Cel Shader Graph references) ──
+        private static readonly int OffsetID = Shader.PropertyToID("_Offset");
+        private static readonly int TilingID = Shader.PropertyToID("_Tiling");
 
-        [Header("Constant scroll (fallback)")]
-        [SerializeField] private Vector2 uvPerSecond = new Vector2(0f, 1f); // V only by default
+        [Header("Scroll Settings")]
+        [SerializeField] private Vector2 uvPerSecond = new Vector2(0f, 1f);
 
-        [Header("Optional: link to world speed")]
-        [SerializeField] private GameSpeedController speedSource; // if set, overrides uvPerSecond on V axis
-        [SerializeField] private float metersPerUV = 1f;          // how many world meters equal 1.0 UV
-        [SerializeField] private float directionMultiplier = 1f;  // set -1 to invert
+        [Header("Optional: Link to World Speed")]
+        [SerializeField] private GameSpeedController speedSource;
+        [SerializeField] private float metersPerUV        = 1f;
+        [SerializeField] private float directionMultiplier = 1f;
 
-        [Header("Material slot (for renderers with multiple materials)")]
+        [Header("Material Slot")]
         [SerializeField] private int materialIndex = 0;
+        [SerializeField] private Renderer _ren;
 
-        [SerializeField ]private Renderer _ren;
-        private Material _mat;
-        private Vector2  _offset;
+        // ── Use MaterialPropertyBlock for GPU instancing / batching ──
+        private MaterialPropertyBlock _mpb;
+        private Vector2 _offset;
+        private bool _valid;
 
         void Awake()
         {
-            if(_ren == null) _ren = GetComponent<Renderer>();
+            if (_ren == null) _ren = GetComponent<Renderer>();
 
-            // Simple & safe for a prototype: create a per-instance material.
-            // (Shipping tip: use MaterialPropertyBlock for better batching.)
-            var mats = _ren.materials;
+            _mpb = new MaterialPropertyBlock();
+            _ren.GetPropertyBlock(_mpb, materialIndex);
+
+            // Validate the shader has our expected property
+            var mats = _ren.sharedMaterials;
             materialIndex = Mathf.Clamp(materialIndex, 0, mats.Length - 1);
-            _mat = mats[materialIndex];
+            var mat = mats[materialIndex];
 
-            if (_mat.HasProperty(textureProperty))
-                _offset = _mat.GetTextureOffset(textureProperty);
+            if (mat != null && mat.HasProperty(OffsetID))
+            {
+                // Seed offset from whatever the material already has set
+                _offset = mat.GetVector(OffsetID);
+                _valid  = true;
+            }
             else
-                Debug.LogWarning($"[{nameof(SimpleURPUVScroll)}] Property '{textureProperty}' not found on material.", this);
+            {
+                Debug.LogWarning($"[{nameof(SimpleURPUVScroll)}] '_Offset' not found on material '{mat?.name}'. " +
+                                 "Check your Shader Graph property reference name.", this);
+            }
         }
 
         void Update()
         {
-            if (_mat == null || ! _mat.HasProperty(textureProperty)) return;
+            if (!_valid) return;
 
+            // ── Accumulate offset ──
             if (speedSource != null)
             {
-                // Scroll along V using world speed
                 float uvDeltaV = (speedSource.CurrentSpeed * Time.deltaTime * directionMultiplier)
                                  / Mathf.Max(0.0001f, metersPerUV);
                 _offset.y += uvDeltaV;
             }
             else
             {
-                // Constant scroll on both axes (if you want)
                 _offset += uvPerSecond * Time.deltaTime;
             }
 
-            // Optional wrap to 0..1 to avoid large values over time
+            // Wrap to avoid floating-point drift over long sessions
             _offset.x = Mathf.Repeat(_offset.x, 1f);
             _offset.y = Mathf.Repeat(_offset.y, 1f);
 
-            _mat.SetTextureOffset(textureProperty, _offset);
+            // ── Push to GPU without creating a new material instance ──
+            _mpb.SetVector(OffsetID, new Vector4(_offset.x, _offset.y, 0f, 0f));
+            _ren.SetPropertyBlock(_mpb, materialIndex);
         }
+
+#if UNITY_EDITOR
+        void OnValidate()
+        {
+            // Let you tweak uvPerSecond at runtime in the Editor
+            if (_mpb != null && _valid)
+            {
+                _mpb.SetVector(OffsetID, new Vector4(_offset.x, _offset.y, 0f, 0f));
+                _ren.SetPropertyBlock(_mpb, materialIndex);
+            }
+        }
+#endif
     }
 }

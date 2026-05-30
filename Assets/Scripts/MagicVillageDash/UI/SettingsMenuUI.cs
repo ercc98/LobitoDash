@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using ErccDev.Foundation.Data;
 using MagicVillageDash.Settings;
+using MagicVillageDash.Audio;
 
 namespace MagicVillageDash.UI
 {
@@ -148,6 +149,7 @@ namespace MagicVillageDash.UI
         private void OnCloseButtonClicked()
         {
             gameObject.SetActive(false);
+            AudioManager.Instance.Play(UIId.Continue);
         }
     }
 }

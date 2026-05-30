@@ -1,6 +1,7 @@
 using UnityEngine;
 using ErccDev.Foundation.Pause;
 using System;
+using MagicVillageDash.Audio;
 
 namespace MagicVillageDash.Pause
 {
@@ -17,8 +18,22 @@ namespace MagicVillageDash.Pause
             remove { service.Changed -= value; }
         }
 
-        public void Pause(string reason = "Pause")  => service.Pause(reason);
-        public void Resume(string reason = "Resume") => service.Resume(reason);
-        public void Toggle(string reason = "Toggle") => service.Toggle(reason);
+        public void Pause(string reason = "Pause")
+        {
+            service.Pause(reason);
+            AudioManager.Instance.Play(UIId.Accept);
+
+        }
+        public void Resume(string reason = "Resume")
+        {
+            service.Resume(reason);
+            AudioManager.Instance.Play(UIId.Accept);
+        }
+        public void Toggle(string reason = "Toggle")
+        {
+            service.Toggle(reason);
+          AudioManager.Instance.Play(UIId.Accept); 
+
+        } 
     }
 }

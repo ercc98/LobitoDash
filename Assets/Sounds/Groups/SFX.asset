@@ -15,17 +15,17 @@ MonoBehaviour:
   entries:
   - id: Coin
     clip: {fileID: 8300000, guid: 43e5619ec4b1d184fb6bd03c4fba9d82, type: 3}
-    volume: 0.75
+    volume: 0.25
     volumeJitter: 0
     pitchJitter: 0
   - id: Bomb
     clip: {fileID: 8300000, guid: af66162561d2eed40ad49268cab318bb, type: 3}
-    volume: 0.75
+    volume: 0.25
     volumeJitter: 0
     pitchJitter: 0
   - id: ElectricSwipe
     clip: {fileID: 8300000, guid: a245ee5d75348c84a89ffb7992f1dc82, type: 3}
-    volume: 0.75
+    volume: 0.25
     volumeJitter: 0
     pitchJitter: 0
   - id: ElectricSwipe2

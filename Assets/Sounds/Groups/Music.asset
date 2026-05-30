@@ -15,11 +15,11 @@ MonoBehaviour:
   entries:
   - id: GameTheme
     clip: {fileID: 8300000, guid: 047bc35adfd681548be44c53e1b531dc, type: 3}
-    volume: 0.7
+    volume: 0.25
     volumeJitter: 0
     pitchJitter: 0
   - id: GameTheme2
     clip: {fileID: 8300000, guid: 03419c4a0cf6f4248a437982ad6ac424, type: 3}
-    volume: 0.7
+    volume: 0.25
     volumeJitter: 0
     pitchJitter: 0

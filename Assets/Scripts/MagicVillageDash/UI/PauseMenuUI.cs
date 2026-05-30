@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using ErccDev.Foundation.Pause;
 using ErccDev.Foundation.Loader;
+using MagicVillageDash.Audio;
+using ErccDev.Foundation.Audio;
 
 namespace MagicVillageDash.UI
 {
@@ -71,22 +73,26 @@ namespace MagicVillageDash.UI
 
         private void OnResumeClicked()
         {
-            pause.Resume("ResumeButton");
+            pause.Resume("ResumeButton");            
         }
 
         private void OnSettingsClicked()
         {
             settingsMenuGO?.SetActive(true);
+            AudioManager.Instance.Play(UIId.Continue);
         }
 
         private void OnQuitClicked()
         {
             SceneLoader.Instance.LoadSceneAsync("IntroScene");
+            AudioManager.Instance.Play(UIId.Back);
         }
 
         private void OnRestartClicked()
         {
             SceneLoader.Instance.LoadSceneAsync("RunnerScene");
+            AudioManager.Instance.Play(UIId.Back);   
+            AudioManager.Instance?.StopLoop(SoundCategory.Music);         
         }
     }
 }

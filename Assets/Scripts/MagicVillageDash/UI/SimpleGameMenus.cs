@@ -4,6 +4,8 @@ using ErccDev.Foundation.Core.Gameplay;
 using MagicVillageDash.Score;
 using TMPro;
 using System.Collections;
+using MagicVillageDash.Audio;
+using ErccDev.Foundation.Loader;
 
 namespace MagicVillageDash.UI
 {
@@ -59,6 +61,7 @@ namespace MagicVillageDash.UI
             SetPanel(startPanel, false);
             Time.timeScale = 1f;
 
+            AudioManager.Instance.Play(UIId.Accept);
             GameEvents.RaiseGameStarted();
         }
 
@@ -66,7 +69,9 @@ namespace MagicVillageDash.UI
         {
             // Restart current scene (use SceneLoader if you prefer)
             Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+            AudioManager.Instance.Play(UIId.Continue);
+            SceneLoader.Instance.LoadSceneAsync(SceneManager.GetActiveScene().name);
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
             
         }
 
