@@ -24,6 +24,7 @@ namespace MagicVillageDash.World
         [Header("Config")]
         [SerializeField] private ChunkSpawnConfig activeConfig;
         readonly List<ChunkRoot> active = new();
+        ChunkRoot lastChunk => active.Count > 0 ? active[active.Count - 1] : null;
         float chunkLength;
         int nextSpawnZ;
 
@@ -92,17 +93,20 @@ namespace MagicVillageDash.World
         void FixedUpdate()
         {
             if (!isSpawning) return;
-            
+
             if (active.Count > 0)
             {
                 var first = active[0];
+                if(lastChunk != null && nextSpawnZ - chunkLength >= lastChunk.transform.position.z)
+                {
+                    FillOneAhead();
+                    OnSpawnedChunk?.Invoke();
+                }
                 if (player.position.z - first.transform.position.z > activeConfig.despawnBehindDistance)
                 {
                     active.RemoveAt(0);
                     first.OwnerFactory?.Recycle(first);  // recycle to the same factory
-                    FillOneAhead();
-                    OnSpawnedChunk?.Invoke();
-                }
+                }                
             }
         }
 
@@ -133,8 +137,8 @@ namespace MagicVillageDash.World
 
 
             //var factory = GetRandomFactory();
-
-            ChunkRoot chunk = factory.Spawn(new Vector3(0f, 0f, nextSpawnZ), Quaternion.identity, worldMover.transform);
+            float zPosition = lastChunk != null ? lastChunk.transform.position.z + lastChunk.ChunkLength : nextSpawnZ;
+            ChunkRoot chunk = factory.Spawn(new Vector3(0f, 0f, zPosition), Quaternion.identity, worldMover.transform);
             chunk.InjectFactories(coinFactory, obstacleFactory);
             coinFiller.FillChunk(chunk);
             if (finalSpawnObstacles && chunk.CanSpawnObstacles) obstacleFiller.FillChunk(chunk);
@@ -145,26 +149,6 @@ namespace MagicVillageDash.World
 
             return chunk;
         }
-        
-        /*
-        ChunkFactory GetRandomFactory()
-        {
-            if (factories == null || factories.Length == 0) return null;
-
-            // Pick a random non-null factory
-            for (int tries = 0; tries < 8; tries++)
-            {
-                var f = factories[Random.Range(0, factories.Length)];
-                if (f != null) return f;
-            }
-
-            // Fallback: first non-null
-            foreach (var f in factories)
-                if (f != null) return f;
-
-            return null;            
-        }
-        */
 
     }
 }
