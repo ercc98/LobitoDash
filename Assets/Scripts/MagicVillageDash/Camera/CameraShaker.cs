@@ -1,6 +1,6 @@
-using ErccDev.Foundation.Camera;
+using ErccDev.Foundation.Cameras;
 
-namespace MagicVillageDash.Camera
+namespace MagicVillageDash.Cameras
 {
     public class CameraShaker : CameraShakerBase
     {
