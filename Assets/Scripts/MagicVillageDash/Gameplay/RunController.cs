@@ -135,7 +135,7 @@ namespace MagicVillageDash.Runner
         private void OnGameStarted()
         {
             Debug.Log("RunController: OnGameStarted called");
-            AudioManager.Instance?.Play(MusicId.GameTheme2);
+            AudioManager.Instance?.PlayLoop(MusicId.GameTheme3);
             coinCounter?.ResetCoins(0);
             distanceTracker?.ResetDistance();
             gameSpeedController?.ResetSpeed();
