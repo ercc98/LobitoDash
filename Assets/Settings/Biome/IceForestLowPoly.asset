@@ -19,8 +19,8 @@ MonoBehaviour:
   - {fileID: 2946758122755260563, guid: ff4925992f7725144a8fe22242c8db66, type: 3}
   - {fileID: 2946758122755260563, guid: fa7117ba52219ea49b5823cf1a4bd151, type: 3}
   - {fileID: 2946758122755260563, guid: 1dde68e84a5a8634987784a08aa92726, type: 3}
-  minBlockChunks: 3
-  maxBlockChunks: 5
+  minBlockChunks: 7
+  maxBlockChunks: 9
   transitions:
   - toBiome: {fileID: 11400000}
     weight: 0.5

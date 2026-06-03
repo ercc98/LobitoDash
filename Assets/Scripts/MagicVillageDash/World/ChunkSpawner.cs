@@ -8,7 +8,7 @@ using System;
 
 namespace MagicVillageDash.World
 {
-    public sealed class ChunkSpawner : MonoBehaviour, IChunkSpawnerConfig, IChunkSpawnerRunner, IEnemySpawnPermission
+    public sealed class ChunkSpawner : MonoBehaviour, IChunkSpawnerConfig, IChunkSpawnerRunner, IEnemySpawnPermission, IActiveChunkQuery
     {
         [Header("Refs")]
         [SerializeField] Transform player;
@@ -139,6 +139,7 @@ namespace MagicVillageDash.World
             //var factory = GetRandomFactory();
             float zPosition = lastChunk != null ? lastChunk.transform.position.z + lastChunk.ChunkLength : nextSpawnZ;
             ChunkRoot chunk = factory.Spawn(new Vector3(0f, 0f, zPosition), Quaternion.identity, worldMover.transform);
+            chunk.Biome = biomeDirector.CurrentBiome;
             chunk.InjectFactories(coinFactory, obstacleFactory);
             coinFiller.FillChunk(chunk);
             if (finalSpawnObstacles && chunk.CanSpawnObstacles) obstacleFiller.FillChunk(chunk);
@@ -148,6 +149,18 @@ namespace MagicVillageDash.World
             active.Add(chunk);
 
             return chunk;
+        }
+
+        public ChunkRoot GetChunkContaining(float worldZ)
+        {
+            for (int i = 1; i < active.Count; i++)
+            {
+                var c = active[i];
+                float start = c.transform.position.z;
+                if (worldZ < start) break;                 // sorted ascending → nothing further can contain it
+                if (worldZ < start + c.ChunkLength) return c;
+            }
+            return null;
         }
 
     }

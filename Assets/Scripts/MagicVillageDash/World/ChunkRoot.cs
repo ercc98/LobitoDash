@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MagicVillageDash.Collectibles;
 using MagicVillageDash.Obstacles;
+using MagicVillageDash.World.Biomes;
 using UnityEngine;
 
 namespace MagicVillageDash.World
@@ -35,6 +36,9 @@ namespace MagicVillageDash.World
             private set => canSpawnEnemies = value;
         }
         public ChunkFactory OwnerFactory { get; internal set; }
+
+        /// <summary>Biome this chunk was spawned for; set by ChunkSpawner.</summary>
+        public BiomeDefinition Biome { get; internal set; }
 
 
         void Awake()
