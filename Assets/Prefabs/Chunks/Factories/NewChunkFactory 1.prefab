@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6133257215615420886}
   - component: {fileID: 2946758122755260563}
   m_Layer: 0
-  m_Name: ChunkFactory (1)
+  m_Name: NewChunkFactory 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 3055350102912253926}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.72972, y: -2.53212, z: 30.99922}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebd9133d4b9c27f40bee7618d3ff475d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.World.ChunkFactory
-  prefab: {fileID: 7466678910547654711, guid: 333991e31e4f7fa49bfe35a2c6c3442a, type: 3}
+  prefab: {fileID: 3331520512485410995, guid: 1f902061d4db2074fab204cd6a289def, type: 3}
   initialPoolSize: 2

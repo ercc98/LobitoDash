@@ -17,7 +17,8 @@ MonoBehaviour:
   - {fileID: 2946758122755260563, guid: 376ac33dec287e44f8fd0e63e479a572, type: 3}
   loopFactories:
   - {fileID: 2946758122755260563, guid: 376ac33dec287e44f8fd0e63e479a572, type: 3}
-  - {fileID: 1552743300518599517, guid: a193e46f75afeb5409f223b302f42c0b, type: 3}
+  - {fileID: 2946758122755260563, guid: 1a8ed151cb2ab85408639978e4ee986a, type: 3}
+  - {fileID: 2946758122755260563, guid: db21aaef2081d1d41b771add63837dee, type: 3}
   minBlockChunks: 3
   maxBlockChunks: 5
   transitions:
