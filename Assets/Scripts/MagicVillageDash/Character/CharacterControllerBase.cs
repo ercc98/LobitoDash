@@ -68,6 +68,7 @@ namespace MagicVillageDash.Character
         {
             selfLaneMover.Jump();
             selfMovementAnimator.Jump();
+            
         }
 
         public virtual void Defend(bool isDefending)
@@ -82,6 +83,7 @@ namespace MagicVillageDash.Character
         public void OnHazardHit(Vector3 hazardHitPosition)
         {
             AudioManager.Instance?.Play("Bomb", SoundCategory.SFX);
+            AudioManager.Instance?.Play("Die", SoundCategory.Voice);
             selfDeathAnimator.Die();
             SpawnHitVfx(hazardHitPosition);
             OnHazardHitInternal(hazardHitPosition);

@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27949cd58b5ca140800cd497311fde3, type: 3}
   m_Name: Voice
   m_EditorClassIdentifier: ErccDev.Audio::ErccDev.Audio.SoundGroup
-  entries: []
+  entries:
+  - id: Die
+    clip: {fileID: 8300000, guid: 9baf3f4fa8a9143498d4a1c77fc6d929, type: 3}
+    volume: 0.5
+    volumeJitter: 0
+    pitchJitter: 0
+  - id: Bark
+    clip: {fileID: 8300000, guid: 52dbfe4d39ddc7c41b9eb47a6c9e9ab8, type: 3}
+    volume: 0.5
+    volumeJitter: 0
+    pitchJitter: 0

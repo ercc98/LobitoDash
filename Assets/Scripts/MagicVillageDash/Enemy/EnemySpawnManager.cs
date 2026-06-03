@@ -20,6 +20,7 @@ namespace MagicVillageDash.Enemies
         [SerializeField] private float laneWidth = 2.2f;
 
         [Header("Respawn")]
+        [SerializeField] private Vector3 spawnPosition = new Vector3(0, 1, 2);
         [SerializeField] private float respawnDelay = 1.5f;
         [SerializeField] private ParticleSystem spawnAreaParticleSystem;
 
@@ -56,19 +57,18 @@ namespace MagicVillageDash.Enemies
         IEnumerator SpawnEnemyAfterDelay(float respawnDelay, int lane)
         {
             yield return new WaitForSeconds(respawnDelay);
-            
-            float positionX = laneWidth * (lane - 1);
-            spawnAreaParticleSystem.transform.position = new Vector3(positionX, 0.05f, 0);
+            spawnPosition.x = laneWidth * (lane - 1);
+            spawnAreaParticleSystem.transform.position = spawnPosition - new Vector3(0, 0.95f, 0);
             spawnAreaParticleSystem.Play();
             AudioManager.Instance?.Play("SpawnAreaEnemy", SoundCategory.SFX);
             yield return _waitForSeconds1;
             OnStartSpawnEnemy?.Invoke(lane);
-            OnSpawnedEnemy?.Invoke(Spawn(positionX, lane));
+            OnSpawnedEnemy?.Invoke(Spawn(lane));
         }
 
-        public EnemyController Spawn(float positionX, int lane)
+        public EnemyController Spawn(int lane)
         {
-            EnemyController spawnedEnemy = enemyFactory.Spawn(new Vector3(positionX, 1, 0), Quaternion.identity);
+            EnemyController spawnedEnemy = enemyFactory.Spawn(spawnPosition, Quaternion.identity);
             spawnedEnemy.SelfLaneMover.SnapToLane(lane);
             AudioManager.Instance?.Play("SpawnEnemy", SoundCategory.SFX);
             return spawnedEnemy;

@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using ErccDev.Foundation.Audio;
-using ErccDev.Foundation.Camera;
+using ErccDev.Foundation.Cameras;
 using ErccDev.Foundation.Core.Gameplay;
 using ErccDev.Foundation.Core.Tutorial;
 using ErccDev.Foundation.Data;
 using ErccDev.Foundation.Input.Swipe;
 using MagicVillageDash.Audio;
-using MagicVillageDash.Camera;
+using MagicVillageDash.Cameras;
 using MagicVillageDash.Character;
 using MagicVillageDash.Data;
 using MagicVillageDash.Enemies;
@@ -135,7 +135,7 @@ namespace MagicVillageDash.Runner
         private void OnGameStarted()
         {
             Debug.Log("RunController: OnGameStarted called");
-            AudioManager.Instance?.Play(MusicId.GameTheme2);
+            AudioManager.Instance?.PlayLoop(MusicId.GameTheme3);
             coinCounter?.ResetCoins(0);
             distanceTracker?.ResetDistance();
             gameSpeedController?.ResetSpeed();

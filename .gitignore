@@ -89,3 +89,9 @@ Assets/Settings/FirebaseFiles/google-services_old.json.meta
 Assets/StreamingAssets/google-services-desktop.json
 Assets/GoogleMobileAds/
 Assets/GoogleMobileAds.meta
+
+#Python files from ClaudeCode
+*.py
+*.pyc
+_preview_kit.png
+_preview_themes.png

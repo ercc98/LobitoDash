@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using ErccDev.Foundation.Audio;
 using ErccDev.Foundation.Core.Gameplay;
+using MagicVillageDash.Audio;
 using MagicVillageDash.Character;
 using MagicVillageDash.Character.CharacterAnimator;
 using MagicVillageDash.Runner;
@@ -53,6 +55,7 @@ namespace MagicVillageDash.Enemy
             if (selfLaneMover != null) selfLaneMover.OnLaneChanged += OnSelfLaneChanged;
             GameEvents.GameOver += OnGameOver;
             BeginNonCollidingSelfCCWindow();
+            AudioManager.Instance?.Play("Bark", SoundCategory.Voice);
         }
 
         private void BeginNonCollidingSelfCCWindow()

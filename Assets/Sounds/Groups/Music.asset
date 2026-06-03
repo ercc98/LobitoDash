@@ -23,3 +23,8 @@ MonoBehaviour:
     volume: 0.25
     volumeJitter: 0
     pitchJitter: 0
+  - id: GameTheme3
+    clip: {fileID: 8300000, guid: 66f8db7d34ac446dd8fdfed98521d70a, type: 3}
+    volume: 0.25
+    volumeJitter: 0
+    pitchJitter: 0

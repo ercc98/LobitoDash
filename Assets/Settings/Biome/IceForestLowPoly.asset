@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea01d86eb8e42484faa809f436c214c8, type: 3}
+  m_Name: IceForestLowPoly
+  m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.World.Biomes.BiomeDefinition
+  biomeId: Forest
+  startFactories:
+  - {fileID: 2946758122755260563, guid: ff4925992f7725144a8fe22242c8db66, type: 3}
+  loopFactories:
+  - {fileID: 2946758122755260563, guid: ff4925992f7725144a8fe22242c8db66, type: 3}
+  - {fileID: 2946758122755260563, guid: fa7117ba52219ea49b5823cf1a4bd151, type: 3}
+  - {fileID: 2946758122755260563, guid: 1dde68e84a5a8634987784a08aa92726, type: 3}
+  minBlockChunks: 7
+  maxBlockChunks: 9
+  transitions:
+  - toBiome: {fileID: 11400000}
+    weight: 0.5
+    connectorFactories: []
+    minConnectorChunks: 0
+    maxConnectorChunks: 0
+  - toBiome: {fileID: 11400000, guid: 05646046e6e21884699bed387920693b, type: 2}
+    weight: 0.5
+    connectorFactories: []
+    minConnectorChunks: 0
+    maxConnectorChunks: 0
+  - toBiome: {fileID: 11400000, guid: 31d5eed18e66a684d9e12b99ea9d6252, type: 2}
+    weight: 0.5
+    connectorFactories: []
+    minConnectorChunks: 0
+    maxConnectorChunks: 0

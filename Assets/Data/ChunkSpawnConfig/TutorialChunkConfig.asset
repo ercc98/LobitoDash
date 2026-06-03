@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: TutorialChunkConfig
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.ChunkSpawnConfig
   keepAhead: 7
-  despawnBehindDistance: 50
+  despawnBehindDistance: 60
   startAheadDistance: 70

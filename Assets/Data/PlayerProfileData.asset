@@ -17,9 +17,9 @@ MonoBehaviour:
   languageCode: en
   countryCode: MX
   createdAtUtcTicks: 639020442301661070
-  lastLoginUtcTicks: 639038615246190300
+  lastLoginUtcTicks: 639157263174987582
   lastSaveUtcTicks: 0
   lastAppVersion: 0.1.0
   saveSchemaVersion: 1
   analyticsConsent: 1
-  tutorialCompleted: 0
+  tutorialCompleted: 1
