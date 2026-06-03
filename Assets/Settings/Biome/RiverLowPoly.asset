@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea01d86eb8e42484faa809f436c214c8, type: 3}
-  m_Name: ForestLowPoly
+  m_Name: RiverLowPoly
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.World.Biomes.BiomeDefinition
-  biomeId: Forest
+  biomeId: River
   startFactories:
-  - {fileID: 2946758122755260563, guid: 376ac33dec287e44f8fd0e63e479a572, type: 3}
+  - {fileID: 2946758122755260563, guid: 4c5554ad48bd73f4a9b0ba8c075d8385, type: 3}
   loopFactories:
-  - {fileID: 2946758122755260563, guid: 376ac33dec287e44f8fd0e63e479a572, type: 3}
-  - {fileID: 2946758122755260563, guid: 1a8ed151cb2ab85408639978e4ee986a, type: 3}
-  - {fileID: 2946758122755260563, guid: db21aaef2081d1d41b771add63837dee, type: 3}
-  minBlockChunks: 3
-  maxBlockChunks: 5
+  - {fileID: 2946758122755260563, guid: 4c5554ad48bd73f4a9b0ba8c075d8385, type: 3}
+  - {fileID: 2946758122755260563, guid: 4314772b35a25594db6c0d12ff13fdce, type: 3}
+  - {fileID: 2946758122755260563, guid: 5259b5796f2b187488f6c7bb0ed5b670, type: 3}
+  minBlockChunks: 1
+  maxBlockChunks: 2
   transitions:
   - toBiome: {fileID: 11400000}
-    weight: 0.5
+    weight: 0.1
     connectorFactories: []
     minConnectorChunks: 0
     maxConnectorChunks: 0
-  - toBiome: {fileID: 11400000, guid: 05646046e6e21884699bed387920693b, type: 2}
-    weight: 0.5
+  - toBiome: {fileID: 11400000, guid: 31d5eed18e66a684d9e12b99ea9d6252, type: 2}
+    weight: 0.9
     connectorFactories: []
     minConnectorChunks: 0
     maxConnectorChunks: 0
   - toBiome: {fileID: 11400000, guid: d804e1789996abf4eabce837480860df, type: 2}
-    weight: 0.5
+    weight: 0.9
     connectorFactories: []
     minConnectorChunks: 0
     maxConnectorChunks: 0
