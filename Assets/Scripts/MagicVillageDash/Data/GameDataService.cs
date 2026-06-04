@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ErccDev.Foundation.Services;
 using ErccDev.Foundation.Data;
+using ErccDev.Foundation.Core.Collection;
 
 namespace MagicVillageDash.Data
 {
@@ -13,7 +14,7 @@ namespace MagicVillageDash.Data
         [SerializeField] private SettingsData settings;
         [SerializeField] private RunStatsData runStats;
         [SerializeField] private AchievementData achievements;
-        //[SerializeField] private ScriptableObject progress;
+        [SerializeField] private CollectionProgressData collectionProgress;
         //[SerializeField] private ScriptableObject records;
 
         protected override void Awake()
@@ -41,8 +42,8 @@ namespace MagicVillageDash.Data
                 playerProfile,
                 runStats,
                 settings,
-                achievements,   // append last: keeps existing save indices stable
-                //progress,
+                achievements,
+                collectionProgress,   // append last: keeps existing save indices stable
                 //records
             };
         }

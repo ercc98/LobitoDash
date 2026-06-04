@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7484842a75ba74fb8dbdb2454d2204, type: 3}
   m_Name: New Achievement Definition
   m_EditorClassIdentifier: ErccDev.Foundation::ErccDev.Foundation.Core.Achievements.AchievementDefinition
-  achievementId: 
+  achievementId: 1
   hidden: 0
   title: 
   description: 
   icon: {fileID: 0}
-  condition: {fileID: 0}
+  condition: {fileID: 11400000, guid: 88049330932aa6343bfed58d42b4bdc3, type: 2}
   rewards: []

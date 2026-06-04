@@ -15,8 +15,10 @@ namespace MagicVillageDash.World
         [SerializeField] GameObject worldMover;
         [SerializeField] CoinRailFiller coinRailFiller;
         [SerializeField] ObstacleRailFiller obstacleRailFiller;
+        [SerializeField] RelicRailFiller relicRailFiller;
         [SerializeField] CoinFactory coinFactory;
         [SerializeField] ObstacleFactory obstacleFactory;
+        [SerializeField] RelicFactory relicFactory;
         [SerializeField] MonoBehaviour biomeDirectorProvider; 
         [SerializeField] ChunkSpawnConfig tutorialConfig;
         [SerializeField] ChunkSpawnConfig normalConfig;
@@ -30,6 +32,7 @@ namespace MagicVillageDash.World
 
         IChunkFiller coinFiller;
         IChunkFiller obstacleFiller;
+        IChunkFiller relicFiller;
         IBiomeDirector biomeDirector;
 
         bool isSpawning;
@@ -44,6 +47,7 @@ namespace MagicVillageDash.World
         {
             coinFiller = coinRailFiller;
             obstacleFiller = obstacleRailFiller;
+            relicFiller = relicRailFiller;
             biomeDirector = biomeDirectorProvider as IBiomeDirector;
             if (biomeDirector == null)
                 Debug.LogError($"{nameof(ChunkSpawner)}: biomeDirectorProvider must implement IBiomeDirector.");
@@ -140,9 +144,10 @@ namespace MagicVillageDash.World
             float zPosition = lastChunk != null ? lastChunk.transform.position.z + lastChunk.ChunkLength : nextSpawnZ;
             ChunkRoot chunk = factory.Spawn(new Vector3(0f, 0f, zPosition), Quaternion.identity, worldMover.transform);
             chunk.Biome = biomeDirector.CurrentBiome;
-            chunk.InjectFactories(coinFactory, obstacleFactory);
+            chunk.InjectFactories(coinFactory, obstacleFactory, relicFactory);
             coinFiller.FillChunk(chunk);
             if (finalSpawnObstacles && chunk.CanSpawnObstacles) obstacleFiller.FillChunk(chunk);
+            relicFiller?.FillChunk(chunk);
             // Mark the owner factory so we can recycle correctly
             chunk.OwnerFactory = factory;
             chunkLength = chunk.ChunkLength;
