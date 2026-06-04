@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaef96e759c6e434fac6fdeabf8d12be, type: 3}
   m_Name: CollectionProgressData
   m_EditorClassIdentifier: ErccDev.Foundation::ErccDev.Foundation.Core.Collection.CollectionProgressData
-  discoveredIds:
-  - 1
+  discoveredIds: []
