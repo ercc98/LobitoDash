@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac522d784f5760b419fc9100dda0d002, type: 3}
   m_Name: AchievementData
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Data.AchievementData
-  unlockedIds: []
-  lastUnlockedId: 
+  unlockedIds:
+  - 1
+  lastUnlockedId: 1

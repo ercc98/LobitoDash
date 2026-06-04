@@ -51,7 +51,14 @@ There is **no** `Assets/Scripts/ErccDev/` folder anymore — that tooling now co
   - `Tutorial/` — swipe-driven `TutorialManager`, `TutorialOverlayUI`, `TutorialTriggerStep`, context builders.
   - `Pause/` — `PauseApplier`, `PauseServiceBehaviour`.
   - `Settings/` — `GraphicsQualityManager`, `SettingsApplier` + `ISettingsApplier`.
-  - `Data/` — `GameDataService`, `RunStatsData`.
+  - `Data/` — `GameDataService`, `RunStatsData`, `AchievementData`.
+  - `Achievements/` — `AchievementManager` (on Foundation's `AchievementManagerBase`), `AchievementContextBuilder`,
+    `Conditions/` (coins/distance/score reached), `Rewards/` (`CoinReward`, `EventBusReward`); persisted via `GameDataService`.
+  - `Collections/` — `CollectionManager` (on Foundation's `CollectionManagerBase`), `CollectionShowcase`,
+    `ModelCollectionEntry`; relics (`Collectibles/RelicCollectible`, `RelicFactory`, `RelicRailFiller`) feed discoveries.
+  - `Notifications/` — `NotificationManager` + `NotificationToastView` (game toasts on Foundation's
+    `NotificationManagerBase`/`NotificationViewBase`), `NotificationTester` (dev-only harness). Achievement/Collection
+    toasts come via Foundation's source bridges. Tintable toast art lives in `Assets/Images/Notifications/`.
   - `AdMobScripts/` — `Interstitial`. `FirebaseScripts/` — `FirebaseAnalyticsService`. `Boostrap/` — `LogoSceneController`.
 - `Assets/Scenes/` — `IntroScene` (title) → `RunnerScene` (core gameplay).
 - `Assets/IgnoreFolder/` — gitignored; holds **licensed third-party asset packs** not in the repo
