@@ -26,9 +26,8 @@ namespace MagicVillageDash.Den.Camera
         [Header("Pan")]
         [Tooltip("World units per second at full steering (steer = 1).")]
         [Min(0f)] [SerializeField] private float panSpeed = 12f;
-        [Tooltip("Center of the rectangular pan area, on the XZ plane.")]
-        [SerializeField] private Vector2 panCenter = Vector2.zero;
-        [Tooltip("Half-size of the pan area (X = world X, Y = world Z).")]
+        [Tooltip("How far the camera may travel from its start position along each pan axis " +
+                 "(X = horizontal/screen-right, Y = vertical/world-up).")]
         [SerializeField] private Vector2 panHalfExtents = new Vector2(15f, 15f);
         [Tooltip("Invert drag direction (push the world instead of steering toward it).")]
         [SerializeField] private bool invertPan = false;
@@ -56,6 +55,10 @@ namespace MagicVillageDash.Den.Camera
         private float _currentSteerX;
         private float _currentSteerY;
 
+        private Vector3 _panOrigin;   // rest position; offsets are measured from here
+        private float _offsetH;       // signed distance travelled along the horizontal axis
+        private float _offsetV;       // signed distance travelled along the vertical axis
+
         private void Awake()
         {
             var steering = steeringProvider != null
@@ -72,6 +75,9 @@ namespace MagicVillageDash.Den.Camera
                 targetCamera = UnityEngine.Camera.main;
             if (panTarget == null && targetCamera != null)
                 panTarget = targetCamera.transform;
+
+            if (panTarget != null)
+                _panOrigin = panTarget.position;
         }
 
         private void OnEnable()
@@ -125,28 +131,24 @@ namespace MagicVillageDash.Den.Camera
             if (panTarget == null || targetCamera == null)
                 return;
 
-            float steerX = _currentSteerX;
-            float steerY = _currentSteerY;
-            if (Mathf.Abs(steerX) < 0.0001f && Mathf.Abs(steerY) < 0.0001f)
-                return;
+            float steerX = invertPan ? -_currentSteerX : _currentSteerX;
+            float steerY = invertPan ? -_currentSteerY : _currentSteerY;
 
-            if (invertPan)
-            {
-                steerX = -steerX;
-                steerY = -steerY;
-            }
+            // Accumulate distance travelled ALONG each pan axis and clamp the scalar offset.
+            // Clamping the 1D offset (not a world coordinate) keeps the limits correct no matter
+            // how the axes are tilted in world space.
+            _offsetH = Mathf.Clamp(_offsetH + steerX * panSpeed * dt, -panHalfExtents.x, panHalfExtents.x);
+            _offsetV = Mathf.Clamp(_offsetV + steerY * panSpeed * dt, -panHalfExtents.y, panHalfExtents.y);
 
-            // Screen-relative pan flattened onto the ground (XZ) plane.
-            Vector3 right   = Vector3.ProjectOnPlane(targetCamera.transform.right,   Vector3.up).normalized;
-            Vector3 forward = Vector3.ProjectOnPlane(targetCamera.transform.forward, Vector3.up).normalized;
-
-            Vector3 move = (right * steerX + forward * steerY) * (panSpeed * dt);
-
-            Vector3 pos = panTarget.position + move;
-            pos.x = Mathf.Clamp(pos.x, panCenter.x - panHalfExtents.x, panCenter.x + panHalfExtents.x);
-            pos.z = Mathf.Clamp(pos.z, panCenter.y - panHalfExtents.y, panCenter.y + panHalfExtents.y);
-            panTarget.position = pos;
+            // Rebuild world position from the rest point plus the two clamped offsets.
+            panTarget.position = _panOrigin + PanAxisH * _offsetH + PanAxisV * _offsetV;
         }
+
+        // Horizontal = camera's right flattened onto the ground; Vertical = world up.
+        private Vector3 PanAxisH =>
+            Vector3.ProjectOnPlane(targetCamera.transform.right, Vector3.up).normalized;
+
+        private Vector3 PanAxisV => Vector3.up;
 
         private void OnPinchedIn()  => ZoomBy(+Mathf.Abs(pinch.DeltaPixels) * ZoomSpeed);  // shrink view = zoom out
         private void OnPinchedOut() => ZoomBy(-Mathf.Abs(pinch.DeltaPixels) * ZoomSpeed);  // grow view   = zoom in
@@ -168,10 +170,23 @@ namespace MagicVillageDash.Den.Camera
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
+            var cam = targetCamera != null ? targetCamera : UnityEngine.Camera.main;
+            if (cam == null)
+                return;
+
+            // At runtime the rest point is captured; in edit mode use the current position.
+            Vector3 origin = Application.isPlaying
+                ? _panOrigin
+                : (panTarget != null ? panTarget.position : transform.position);
+
+            Vector3 h = Vector3.ProjectOnPlane(cam.transform.right, Vector3.up).normalized * panHalfExtents.x;
+            Vector3 v = Vector3.up * panHalfExtents.y;
+
             Gizmos.color = Color.cyan;
-            Vector3 c = new Vector3(panCenter.x, 0f, panCenter.y);
-            Vector3 s = new Vector3(panHalfExtents.x * 2f, 0.1f, panHalfExtents.y * 2f);
-            Gizmos.DrawWireCube(c, s);
+            Gizmos.DrawLine(origin - h + v, origin + h + v);
+            Gizmos.DrawLine(origin + h + v, origin + h - v);
+            Gizmos.DrawLine(origin + h - v, origin - h - v);
+            Gizmos.DrawLine(origin - h - v, origin - h + v);
         }
 #endif
     }
