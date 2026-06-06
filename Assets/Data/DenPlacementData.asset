@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edca7bffb3908a34dabd34caac2ea8cf, type: 3}
-  m_Name: New Event Bus Reward
-  m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Achievements.Rewards.EventBusReward
-  rewardId: 1
-  eventName: achievementReward
-  amount: 0
+  m_Script: {fileID: 11500000, guid: 0542d4918328fef40b8689413c6a55bf, type: 3}
+  m_Name: DenPlacementData
+  m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Data.DenPlacementData
+  placedIds: []

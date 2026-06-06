@@ -15,6 +15,7 @@ namespace MagicVillageDash.Data
         [SerializeField] private RunStatsData runStats;
         [SerializeField] private AchievementData achievements;
         [SerializeField] private CollectionProgressData collectionProgress;
+        [SerializeField] private DenPlacementData denPlacement;
         //[SerializeField] private ScriptableObject records;
 
         protected override void Awake()
@@ -43,7 +44,8 @@ namespace MagicVillageDash.Data
                 runStats,
                 settings,
                 achievements,
-                collectionProgress,   // append last: keeps existing save indices stable
+                collectionProgress,
+                denPlacement,         // append last: keeps existing save indices stable
                 //records
             };
         }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AchievementData
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Data.AchievementData
   unlockedIds:
-  - 1
-  lastUnlockedId: 1
+  - collect_100_coins
+  lastUnlockedId: collect_100_coins

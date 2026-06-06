@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8d598e620a21f04b902b5a1ed673500, type: 3}
+  m_Name: Entry_Swing
+  m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Collections.ModelCollectionEntry
+  entryId: swing
+  hidden: 0
+  title: swing
+  description: swing description
+  icon: {fileID: 21300000, guid: 54eda45f85a6f854fa758fe53f29a497, type: 3}
+  rewards: []
+  modelPrefab: {fileID: 7450270531696909693, guid: 8e4a049730d71724cb2f3893ede3785f, type: 3}

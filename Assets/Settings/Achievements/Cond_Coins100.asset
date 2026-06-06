@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88f7ce230377c0b4ba39763cba206db1, type: 3}
-  m_Name: New Coins In Run Condition
+  m_Name: Cond_Coins100
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Achievements.Conditions.CoinsInRunCondition
-  targetCoins: 50
+  targetCoins: 100
