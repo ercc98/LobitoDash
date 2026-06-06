@@ -16,6 +16,6 @@ MonoBehaviour:
   hidden: 0
   title: swing
   description: swing description
-  icon: {fileID: 21300000, guid: 54eda45f85a6f854fa758fe53f29a497, type: 3}
+  icon: {fileID: 21300000, guid: 5b8be3a27a244f0ea327ef83e781377c, type: 3}
   rewards: []
   modelPrefab: {fileID: 7450270531696909693, guid: 8e4a049730d71724cb2f3893ede3785f, type: 3}

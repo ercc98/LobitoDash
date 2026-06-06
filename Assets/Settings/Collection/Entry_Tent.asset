@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8d598e620a21f04b902b5a1ed673500, type: 3}
-  m_Name: Entry_Campfire
+  m_Name: Entry_Tent
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Collections.ModelCollectionEntry
-  entryId: campfire
+  entryId: tent
   hidden: 0
-  title: campfire
-  description: Campfire description
-  icon: {fileID: 21300000, guid: 3e883a5daf294a68b2578d347b64ec51, type: 3}
+  title: Tent
+  description: Tent Description
+  icon: {fileID: 21300000, guid: 826d6101463d40808bae75523909e668, type: 3}
   rewards: []
-  modelPrefab: {fileID: 1982950940885186009, guid: 5f37e487127e7da45afa6bf7158d1d7c, type: 3}
+  modelPrefab: {fileID: 5349241842979686439, guid: 2e2db4355d63b974d83371f5664eeed2, type: 3}

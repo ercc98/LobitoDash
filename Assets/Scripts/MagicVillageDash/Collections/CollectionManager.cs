@@ -17,6 +17,7 @@ namespace MagicVillageDash.Collections
     /// </summary>
     public sealed class CollectionManager : CollectionManagerBase
     {
+
         // ---------- Persistence routed through the SO save system ----------
 
         protected override void LoadProgress()
