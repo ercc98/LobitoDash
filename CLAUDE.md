@@ -51,16 +51,27 @@ There is **no** `Assets/Scripts/ErccDev/` folder anymore — that tooling now co
   - `Tutorial/` — swipe-driven `TutorialManager`, `TutorialOverlayUI`, `TutorialTriggerStep`, context builders.
   - `Pause/` — `PauseApplier`, `PauseServiceBehaviour`.
   - `Settings/` — `GraphicsQualityManager`, `SettingsApplier` + `ISettingsApplier`.
-  - `Data/` — `GameDataService`, `RunStatsData`, `AchievementData`.
+  - `Data/` — `GameDataService`, `RunStatsData`, `AchievementData`, `DenPlacementData` (slot↔entry
+    placements for the den; ownership lives in the collection, this only records *where* each owned
+    structure is built so the den rebuilds identically next session).
   - `Achievements/` — `AchievementManager` (on Foundation's `AchievementManagerBase`), `AchievementContextBuilder`,
     `Conditions/` (coins/distance/score reached), `Rewards/` (`CoinReward`, `EventBusReward`); persisted via `GameDataService`.
-  - `Collections/` — `CollectionManager` (on Foundation's `CollectionManagerBase`), `CollectionShowcase`,
-    `ModelCollectionEntry`; relics (`Collectibles/RelicCollectible`, `RelicFactory`, `RelicRailFiller`) feed discoveries.
+  - `Collections/` — `CollectionManager` (on Foundation's `CollectionManagerBase`, lives as a prefab —
+    `Assets/Prefabs/CollectionManager.prefab`), `CollectionShowcase`, `ModelCollectionEntry`,
+    `CollectionCatalog` (shared list of every entry); relics (`Collectibles/RelicCollectible`,
+    `RelicFactory`, `RelicRailFiller`) and achievements feed discoveries. Discovering an entry makes it
+    *owned* (recorded in `CollectionProgressData`); the den reads ownership from here.
+  - `Den/Placement/` — the den's "earn it → place it" loop: `DenPlacementController` (builds the tray as
+    owned − placed, runs the tap-item → tap-slot place flow, rebuilds saved placements on load), `DenSlot`
+    (a buildable spot tagged `DenSlot`, with a tappable arrow indicator and stable `SlotId`),
+    `DenTrayCarouselUI` + `DenTrayItemView` (swipeable bottom tray of unplaced structures). Reward-agnostic
+    and read-only against the collection; placement persists via `DenPlacementData`.
   - `Notifications/` — `NotificationManager` + `NotificationToastView` (game toasts on Foundation's
     `NotificationManagerBase`/`NotificationViewBase`), `NotificationTester` (dev-only harness). Achievement/Collection
     toasts come via Foundation's source bridges. Tintable toast art lives in `Assets/Images/Notifications/`.
   - `AdMobScripts/` — `Interstitial`. `FirebaseScripts/` — `FirebaseAnalyticsService`. `Boostrap/` — `LogoSceneController`.
-- `Assets/Scenes/` — `IntroScene` (title) → `RunnerScene` (core gameplay).
+- `Assets/Scenes/` — `IntroScene` (title) → `RunnerScene` (core gameplay); `DenScene` (meta-progression
+  den, see below).
 - `Assets/IgnoreFolder/` — gitignored; holds **licensed third-party asset packs** not in the repo
   (wolf pack, low-poly environment, ambient effects, UI sound packs). The project won't fully open
   without these placed manually (see commit `a35daf4`).
@@ -86,27 +97,34 @@ There is **no** `Assets/Scripts/ErccDev/` folder anymore — that tooling now co
 ## Working in this repo
 - ⚠️ The `unity-mcp` MCP server no longer works — do not rely on it for driving the Unity editor.
 - Current dev happens on feature branches (`ChangingVisuals`, `BiomeImplementation`, `enemyBehavoir`,
-  `Localization`, `MakingTutorial`, `mobilePolish`, …); `main` is the integration branch.
+  `Localization`, `MakingTutorial`, `mobilePolish`, `DenSystem`, …); `main` is the integration branch.
 - ⚠️ **Security:** history contains a branch named `GoogleAPIKeyLeaked` — a Google API key was likely
   committed at some point. If still live, rotate/revoke it and scrub it from history; never commit keys.
 - When adding gameplay tuning knobs, expose them on the relevant controller (`GameSpeedController`,
   `RunScoreSystem`) rather than hardcoding.
 
-## Den System (Future Feature)
+## Den System (In Progress)
 A cozy meta-progression layer on top of the runner loop.
 
 ### Core Concept
-Fixed isometric camera view of a forest clearing ("Wolfland") that grows as the
-player earns rewards from races. Race → earn a den item drop → place it in the den.
-No shop or currency conversion — the reward IS the structure.
+Fixed view of a forest clearing ("Wolfland") that grows as the player earns rewards from races.
+Race → earn a structure drop → place it in the den. No shop or currency conversion — the reward IS
+the structure.
 
-### MVP Scope (Build This First)
-- DenScene: fixed camera, forest clearing, empty placement slots
-- DenItemCollectible: drops in the race like RelicCollectible, has a DenItemType
-- DenResourceData: inventory list of earned-but-unplaced items, persisted via SaveService
-- 3 starter structures: Cave, Campfire, Ancient Tree
-- Bottom tray UI showing unplaced items; tap slot + item to place
-- Placed structures persist between sessions
+### How it's wired (built, on `DenSystem` branch)
+The MVP plan's separate "DenResourceData inventory" was folded into the **collection** instead — there's
+one source of ownership, not two:
+- **Ownership = discovery.** Picking up a relic or unlocking an achievement discovers a `ModelCollectionEntry`
+  (`CollectionProgressData.discoveredIds`). The entry carries the tray `icon` and the built `modelPrefab`.
+  Every entry is listed in `CollectionCatalog`.
+- **`DenPlacementData`** records only slot↔entry placements (`{slotId, entryId}`), so the den rebuilds
+  identically each session. **Tray = owned − placed.**
+- **`DenPlacementController`** (in `DenScene`) builds the tray from the catalog/collection, runs the place
+  flow (tap a tray item → free `DenSlot` arrows light up → tap one → structure spawns from `modelPrefab`
+  and saves), and rebuilds saved placements on load. `DenTrayCarouselUI`/`DenTrayItemView` are the tray;
+  `DenSlot` (tag `DenSlot`) marks each buildable spot.
+- Persistence rides `GameDataService`'s SO save list (`collectionProgress` + `denPlacement` wired on the
+  `GameDataService` prefab). Structures so far: Campfire, Swing, Tent, Well, OutlookPost.
 
 ### Post-MVP Ideas
 - Visiting wolves that react to built structures and leave rewards

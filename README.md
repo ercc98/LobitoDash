@@ -10,7 +10,9 @@ This repository contains the Unity project and supporting assets required to ope
 - **Procedural world streaming** – The world system continuously spawns and recycles chunks while advancing them using a shared `GameSpeedController` so gameplay feels seamless.
 - **Collectible economy** – Coin prefabs spawn on rails, snap to the runner, and update the run score via the `CoinCounter` and `RunScoreSystem` components.
 - **Persistent best runs** – `RunScoreSystem` saves high scores, farthest distance, and best coin haul using the shared `SaveService` utility so players can chase long-term goals.
-- **Modular audio** – `MagicVillageDashAudioManager` provides category-aware playback helpers built on the reusable ErccDev audio toolkit.
+- **Collections & achievements** – Relic pickups and achievement unlocks discover entries in a shared `CollectionCatalog`; ownership persists via `GameDataService`.
+- **Den meta-progression** – A cozy `DenScene` where earned structures are placed into a forest clearing. Earn it in a race → place it in the den; placements persist between sessions. *(In progress.)*
+- **Modular audio** – `AudioManager` provides category-aware playback helpers built on the reusable Foundation audio toolkit.
 
 ## Repository Structure
 
@@ -19,13 +21,18 @@ Assets/
   Animations/          Animation clips, controllers, and timelines.
   Images/, Models/,    Art assets for environments, props, and UI.
   Prefabs/             Player, world chunks, collectibles, and UI prefabs.
-  Scenes/              `IntroScene` (title) and `RunnerScene` (core gameplay).
+  Scenes/              `IntroScene` (title), `RunnerScene` (core gameplay), `DenScene` (meta-progression den).
   Scripts/
-    ErccDev/           Shared tooling: audio, bootstrap, save system, input glue.
-    MagicVillageDash/  Game-specific scripts (runner motor, world, UI, etc.).
+    MagicVillageDash/  Game-specific scripts (runner motor, world, collections, den, UI, etc.),
+                       organized by module under the MagicVillageDash namespace.
 Packages/              Unity package manifest and lock file.
 ProjectSettings/       Project-wide Unity configuration.
 ```
+
+> Shared, reusable systems (EventBus, `SaveService`, audio toolkit, swipe input, scene loader,
+> pause/tutorial bases, pooling/factories) live in the **`com.erccdev.foundation`** package, pulled in
+> via UPM git URL — there is no longer an `Assets/Scripts/ErccDev/` folder. Game scripts subclass and
+> wire those Foundation bases.
 
 ## Requirements
 
@@ -43,7 +50,7 @@ ProjectSettings/       Project-wide Unity configuration.
    - Add the cloned folder and select the Unity 6000.2.6f2 editor (or newer 6.x release).
    - The exact editor version is stored in `ProjectSettings/ProjectVersion.txt` if you need to install it first.
 3. **Install dependencies**
-   - Unity will resolve packages listed in `Packages/manifest.json` automatically. No manual imports are required for the included ErccDev tooling.
+   - Unity will resolve packages listed in `Packages/manifest.json` automatically, including the `com.erccdev.foundation` package (pulled from its git URL). No manual imports are required for that shared tooling.
 4. **Open a scene**
    - Start with `Assets/Scenes/IntroScene.unity` for the full title-to-run flow, or jump directly into `RunnerScene.unity` for immediate gameplay iteration.
 5. **Enter Play Mode** and test the game.
@@ -52,7 +59,7 @@ ProjectSettings/       Project-wide Unity configuration.
 
 ## Controls
 
-The project uses the Unity Input System together with the reusable `ISwipeInput` abstraction from the ErccDev toolkit.
+The project uses the Unity Input System together with the reusable `ISwipeInput` abstraction from the Foundation package.
 
 | Action | Keyboard / Gamepad (in editor) | Touch / Mouse |
 | ------ | ------------------------------ | ------------- |
@@ -60,7 +67,7 @@ The project uses the Unity Input System together with the reusable `ISwipeInput`
 | Jump | Space / South button | Swipe up or tap (if `tapTriggersJump` enabled) |
 | Slide | Left Ctrl / East button | Swipe down |
 
-> **Tip:** Assign an `ErccDev.Input.SwipeInputSystem` prefab to the `RunnerSwipeController` component to translate input events into runner commands.
+> **Tip:** Assign a Foundation swipe-input source to the `RunnerSwipeController` component to translate input events into runner commands.
 
 ## Gameplay Loop
 
