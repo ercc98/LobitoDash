@@ -33,7 +33,8 @@ namespace MagicVillageDash.Data
             
             if (playerProfile) 
                 playerProfile.EnsureInitialized();
-            
+            Application.targetFrameRate = 60;
+            QualitySettings.vSyncCount = 0;
             SaveAll(pretty: true);
         }
         protected override List<ScriptableObject> BuildObjects()
