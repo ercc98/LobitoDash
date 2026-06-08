@@ -17,5 +17,6 @@ MonoBehaviour:
   title: Tent
   description: Tent Description
   icon: {fileID: 21300000, guid: 826d6101463d40808bae75523909e668, type: 3}
-  rewards: []
+  rewards:
+  - {fileID: 11400000, guid: 3875fc9209d943841b9652865a55758d, type: 2}
   modelPrefab: {fileID: 5349241842979686439, guid: 2e2db4355d63b974d83371f5664eeed2, type: 3}
