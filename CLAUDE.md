@@ -57,6 +57,9 @@ There is **no** `Assets/Scripts/ErccDev/` folder anymore — that tooling now co
     Fredoka/CherryBombOne fonts, gold earned-frames). **MagicVillageDash ▸ Create Sample Rewards &
     Achievements** (`Editor/SampleRewardsBuilder`) authors new achievement→reward pairs whose 3D payoff
     is an IgnoreFolder prop, wiring them into both catalogs and the RunnerScene `AchievementManager`.
+    **MagicVillageDash ▸ Generate Reward Icons** (`Editor/RewardIconGenerator`) bakes a transparent
+    `<Prefab>_Icon.png` thumbnail for any prefab in `Prefabs/Rewards` missing one and assigns it to the
+    matching collection entry (by shared name tokens) when that entry still uses the paw placeholder.
   - `Tutorial/` — swipe-driven `TutorialManager`, `TutorialOverlayUI`, `TutorialTriggerStep`, context builders.
   - `Pause/` — `PauseApplier`, `PauseServiceBehaviour`.
   - `Settings/` — `GraphicsQualityManager`, `SettingsApplier` + `ISettingsApplier`.
