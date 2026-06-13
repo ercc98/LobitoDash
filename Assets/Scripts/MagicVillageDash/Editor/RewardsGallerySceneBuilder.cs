@@ -18,6 +18,10 @@ namespace MagicVillageDash.Editor
     /// collection catalogs, and a Back button — then saves it as <c>Assets/Scenes/RewardsGalleryScene.unity</c>
     /// and offers to add it to Build Settings. Re-runnable: rebuilds the scene from scratch each time.
     ///
+    /// The look matches Magic Village Dash's cozy "Wolfland" style: parchment cards on a warm forest
+    /// backdrop, the game's playful fonts (CherryBombOne for headings, Fredoka for body), a gold ribbon
+    /// on earned cards and a paw-print lock on the rest.
+    ///
     /// Run via <b>MagicVillageDash ▸ Build Rewards Gallery Scene</b>. Pure authoring tool, editor-only.
     /// </summary>
     public static class RewardsGallerySceneBuilder
@@ -28,6 +32,26 @@ namespace MagicVillageDash.Editor
         private const string AchCatalogPath   = "Assets/Settings/Achievements/AchievementCatalog.asset";
         private const string CollCatalogPath  = "Assets/Settings/Collection/CollectionCatalog.asset";
 
+        private const string TitleFontPath    = "Assets/Fonts/CherryBombOne-Regular SDF.asset";
+        private const string BodyFontPath     = "Assets/Fonts/Fredoka-VariableFont_wdth,wght SDF.asset";
+        private const string PawIconPath      = "Assets/Images/HUD/PawPrint.png";
+
+        // ----- Wolfland palette -----
+        private static readonly Color Forest      = new(0.13f, 0.20f, 0.16f, 1f);   // backdrop
+        private static readonly Color ForestDeep  = new(0.09f, 0.14f, 0.11f, 1f);   // scroll well
+        private static readonly Color Wood        = new(0.36f, 0.25f, 0.16f, 1f);   // header band
+        private static readonly Color Parchment   = new(0.96f, 0.92f, 0.82f, 1f);   // card face
+        private static readonly Color Ink         = new(0.27f, 0.19f, 0.12f, 1f);   // text on parchment
+        private static readonly Color Cream       = new(0.98f, 0.95f, 0.88f, 1f);   // text on wood
+        private static readonly Color Gold        = new(0.95f, 0.76f, 0.28f, 1f);   // earned accent
+        private static readonly Color Leaf        = new(0.45f, 0.62f, 0.32f, 1f);   // progress fill
+        private static readonly Color LockTint    = new(0.55f, 0.53f, 0.48f, 1f);   // locked icon
+        private static readonly Color Shade       = new(0.10f, 0.10f, 0.10f, 0.55f);// locked overlay
+
+        private static TMP_FontAsset _titleFont;
+        private static TMP_FontAsset _bodyFont;
+        private static Sprite _round;   // built-in rounded UI sprite for sliced panels/buttons
+
         [MenuItem("MagicVillageDash/Build Rewards Gallery Scene")]
         public static void Build()
         {
@@ -36,6 +60,10 @@ namespace MagicVillageDash.Editor
                     $"• {ScenePath}\n• {CardPrefabPath}\n• {AchCatalogPath}\n\nContinue?",
                     "Build", "Cancel"))
                 return;
+
+            _titleFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(TitleFontPath) ?? TMP_Settings.defaultFontAsset;
+            _bodyFont  = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(BodyFontPath)  ?? TMP_Settings.defaultFontAsset;
+            _round     = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
 
             var achievementCatalog = EnsureAchievementCatalog();
             var collectionCatalog  = AssetDatabase.LoadAssetAtPath<ErccDev.Foundation.Core.Collection.CollectionCatalog>(CollCatalogPath);
@@ -68,7 +96,7 @@ namespace MagicVillageDash.Editor
             AddToBuildSettings();
 
             EditorSceneManager.OpenScene(ScenePath);
-            Debug.Log($"[RewardsGallery] Built scene at {ScenePath}. " +
+            Debug.Log($"[RewardsGallery] Built styled scene at {ScenePath}. " +
                       "Wire its 'Open' button (GallerySceneNav) into the intro/den menus to reach it.");
         }
 
@@ -94,42 +122,56 @@ namespace MagicVillageDash.Editor
         {
             var root = new GameObject("GalleryItemCard", typeof(RectTransform), typeof(Image));
             var rt = (RectTransform)root.transform;
-            rt.sizeDelta = new Vector2(220, 280);
-            root.GetComponent<Image>().color = new Color(0.12f, 0.12f, 0.16f, 0.95f);
+            rt.sizeDelta = new Vector2(240, 300);
+            Panel(root.GetComponent<Image>(), Parchment);
 
-            var icon = MakeImage("Icon", rt, new Vector2(140, 140), new Vector2(0, 50));
-            var title = MakeText("Title", rt, new Vector2(200, 36), new Vector2(0, -50), 22, FontStyles.Bold);
-            var desc  = MakeText("Description", rt, new Vector2(200, 70), new Vector2(0, -110), 14, FontStyles.Normal);
+            // Gold "earned" ribbon frame behind the face, revealed only when owned.
+            var frame = new GameObject("EarnedFrame", typeof(RectTransform), typeof(Image));
+            GameObjectUtility.SetParentAndAlign(frame, root);
+            var frameRt = (RectTransform)frame.transform;
+            frameRt.anchorMin = Vector2.zero; frameRt.anchorMax = Vector2.one;
+            frameRt.offsetMin = new Vector2(-8, -8); frameRt.offsetMax = new Vector2(8, 8);
+            Panel(frame.GetComponent<Image>(), Gold);
+            frame.transform.SetAsFirstSibling();
 
-            // Locked overlay: dim panel + lock label, toggled by the view.
+            var icon  = MakeImage("Icon", rt, new Vector2(150, 150), new Vector2(0, 58));
+            var title = MakeText("Title", rt, new Vector2(216, 40), new Vector2(0, -42), 26, _titleFont, Ink);
+            var desc  = MakeText("Description", rt, new Vector2(216, 84), new Vector2(0, -108), 15, _bodyFont, Ink);
+
+            // Locked overlay: dim panel + paw-print lock, toggled by the view.
             var overlay = new GameObject("LockedOverlay", typeof(RectTransform), typeof(Image));
             GameObjectUtility.SetParentAndAlign(overlay, root);
             Stretch((RectTransform)overlay.transform);
-            overlay.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0.55f);
-            var lockLabel = MakeText("LockLabel", (RectTransform)overlay.transform, new Vector2(120, 40), Vector2.zero, 28, FontStyles.Bold);
-            lockLabel.text = "🔒";
+            Panel(overlay.GetComponent<Image>(), Shade);
+            var paw = MakeImage("PawLock", (RectTransform)overlay.transform, new Vector2(90, 90), new Vector2(0, 10));
+            var pawSprite = AssetDatabase.LoadAssetAtPath<Sprite>(PawIconPath);
+            if (pawSprite != null) { paw.GetComponent<Image>().sprite = pawSprite; paw.GetComponent<Image>().color = Cream; }
+            else Panel(paw.GetComponent<Image>(), Cream);
 
-            // Progress bar: background + filled image, plus a percent label.
+            // Progress bar: track + leaf-green fill, plus a percent label (achievements only).
             var barRoot = new GameObject("ProgressBar", typeof(RectTransform), typeof(Image));
             GameObjectUtility.SetParentAndAlign(barRoot, root);
             var barRt = (RectTransform)barRoot.transform;
-            barRt.sizeDelta = new Vector2(200, 16);
-            barRt.anchoredPosition = new Vector2(0, -150);
-            barRoot.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0.6f);
-            var fill = MakeImage("Fill", barRt, new Vector2(200, 16), Vector2.zero);
+            barRt.sizeDelta = new Vector2(210, 18);
+            barRt.anchoredPosition = new Vector2(0, -160);
+            Panel(barRoot.GetComponent<Image>(), ForestDeep);
+            var fill = MakeImage("Fill", barRt, new Vector2(210, 18), Vector2.zero);
             var fillImg = fill.GetComponent<Image>();
-            fillImg.color = new Color(0.3f, 0.8f, 0.4f, 1f);
+            Panel(fillImg, Leaf);
             fillImg.type = Image.Type.Filled;
             fillImg.fillMethod = Image.FillMethod.Horizontal;
+            fillImg.fillOrigin = (int)Image.OriginHorizontal.Left;
             Stretch((RectTransform)fill.transform);
-            var progText = MakeText("ProgressText", rt, new Vector2(80, 20), new Vector2(0, -150), 12, FontStyles.Normal);
+            var progText = MakeText("ProgressText", rt, new Vector2(90, 22), new Vector2(0, -160), 13, _bodyFont, Cream);
 
             var view = root.AddComponent<GalleryItemView>();
             var so = new SerializedObject(view);
             so.FindProperty("icon").objectReferenceValue            = icon.GetComponent<Image>();
             so.FindProperty("titleText").objectReferenceValue       = title;
             so.FindProperty("descriptionText").objectReferenceValue = desc;
+            so.FindProperty("earnedFrame").objectReferenceValue     = frame;
             so.FindProperty("lockedOverlay").objectReferenceValue   = overlay;
+            so.FindProperty("lockedTint").colorValue                = LockTint;
             so.FindProperty("progressFill").objectReferenceValue    = fillImg;
             so.FindProperty("progressText").objectReferenceValue    = progText;
             so.ApplyModifiedPropertiesWithoutUndo();
@@ -168,23 +210,31 @@ namespace MagicVillageDash.Editor
             var go = new GameObject("Background", typeof(RectTransform), typeof(Image));
             GameObjectUtility.SetParentAndAlign(go, parent.gameObject);
             Stretch((RectTransform)go.transform);
-            go.GetComponent<Image>().color = new Color(0.07f, 0.08f, 0.12f, 1f);
+            go.GetComponent<Image>().color = Forest;
         }
 
         private static void BuildHeader(Transform parent, out TMP_Text summaryText)
         {
-            var title = MakeText("TitleHeader", parent as RectTransform, new Vector2(900, 90), Vector2.zero, 60, FontStyles.Bold);
+            // Wood banner across the top.
+            var band = new GameObject("HeaderBand", typeof(RectTransform), typeof(Image));
+            GameObjectUtility.SetParentAndAlign(band, parent.gameObject);
+            var brt = (RectTransform)band.transform;
+            brt.anchorMin = new Vector2(0f, 1f); brt.anchorMax = new Vector2(1f, 1f);
+            brt.pivot = new Vector2(0.5f, 1f);
+            brt.sizeDelta = new Vector2(0, 230);
+            brt.anchoredPosition = Vector2.zero;
+            Panel(band.GetComponent<Image>(), Wood);
+
+            var title = MakeText("TitleHeader", brt, new Vector2(960, 100), new Vector2(0, -70), 62, _titleFont, Gold);
             var trt = (RectTransform)title.transform;
             trt.anchorMin = trt.anchorMax = new Vector2(0.5f, 1f);
             trt.pivot = new Vector2(0.5f, 1f);
-            trt.anchoredPosition = new Vector2(0, -60);
             title.text = "Rewards & Achievements";
 
-            summaryText = MakeText("Summary", parent as RectTransform, new Vector2(600, 50), Vector2.zero, 34, FontStyles.Normal);
+            summaryText = MakeText("Summary", brt, new Vector2(600, 50), new Vector2(0, -170), 34, _bodyFont, Cream);
             var srt = (RectTransform)summaryText.transform;
             srt.anchorMin = srt.anchorMax = new Vector2(0.5f, 1f);
             srt.pivot = new Vector2(0.5f, 1f);
-            srt.anchoredPosition = new Vector2(0, -160);
             summaryText.text = "Earned 0 / 0";
         }
 
@@ -193,15 +243,18 @@ namespace MagicVillageDash.Editor
             var scrollGo = new GameObject("Gallery ScrollView", typeof(RectTransform), typeof(Image), typeof(ScrollRect));
             GameObjectUtility.SetParentAndAlign(scrollGo, parent.gameObject);
             var scrollRt = (RectTransform)scrollGo.transform;
-            scrollRt.anchorMin = new Vector2(0.05f, 0.1f);
-            scrollRt.anchorMax = new Vector2(0.95f, 0.78f);
+            scrollRt.anchorMin = new Vector2(0.04f, 0.1f);
+            scrollRt.anchorMax = new Vector2(0.96f, 0.86f);
             scrollRt.offsetMin = scrollRt.offsetMax = Vector2.zero;
-            scrollGo.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.03f);
+            var well = scrollGo.GetComponent<Image>();
+            Panel(well, ForestDeep);
+            well.color = new Color(ForestDeep.r, ForestDeep.g, ForestDeep.b, 0.6f);
 
             var viewportGo = new GameObject("Viewport", typeof(RectTransform), typeof(Image), typeof(Mask));
             GameObjectUtility.SetParentAndAlign(viewportGo, scrollGo);
             var viewportRt = (RectTransform)viewportGo.transform;
             Stretch(viewportRt);
+            viewportGo.GetComponent<Image>().color = Color.white;
             viewportGo.GetComponent<Mask>().showMaskGraphic = false;
 
             var contentGo = new GameObject("Content", typeof(RectTransform), typeof(GridLayoutGroup), typeof(ContentSizeFitter));
@@ -213,9 +266,9 @@ namespace MagicVillageDash.Editor
             contentRt.anchoredPosition = Vector2.zero;
 
             var grid = contentGo.GetComponent<GridLayoutGroup>();
-            grid.cellSize = new Vector2(220, 280);
-            grid.spacing = new Vector2(24, 24);
-            grid.padding = new RectOffset(24, 24, 24, 24);
+            grid.cellSize = new Vector2(240, 300);
+            grid.spacing = new Vector2(28, 28);
+            grid.padding = new RectOffset(30, 30, 30, 30);
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             grid.constraintCount = 4;
 
@@ -227,6 +280,8 @@ namespace MagicVillageDash.Editor
             scroll.viewport = viewportRt;
             scroll.horizontal = false;
             scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Elastic;
+            scroll.scrollSensitivity = 30f;
 
             return contentGo.transform;
         }
@@ -238,20 +293,33 @@ namespace MagicVillageDash.Editor
             var rt = (RectTransform)go.transform;
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0f);
             rt.pivot = new Vector2(0.5f, 0f);
-            rt.sizeDelta = new Vector2(280, 90);
+            rt.sizeDelta = new Vector2(320, 100);
             rt.anchoredPosition = new Vector2(0, 50);
-            go.GetComponent<Image>().color = new Color(0.2f, 0.45f, 0.85f, 1f);
+            var img = go.GetComponent<Image>();
+            Panel(img, Gold);
 
-            var label = MakeText("Label", rt, new Vector2(280, 90), Vector2.zero, 34, FontStyles.Bold);
+            var btn = go.GetComponent<Button>();
+            var colors = btn.colors;
+            colors.highlightedColor = new Color(1f, 0.86f, 0.45f, 1f);
+            colors.pressedColor = new Color(0.8f, 0.62f, 0.2f, 1f);
+            btn.colors = colors;
+
+            var label = MakeText("Label", rt, new Vector2(320, 100), Vector2.zero, 38, _titleFont, Wood);
             Stretch((RectTransform)label.transform);
-            label.alignment = TextAlignmentOptions.Center;
             label.text = "Back";
 
             var nav = go.AddComponent<GallerySceneNav>();
-            go.GetComponent<Button>().onClick.AddListener(nav.Back);
+            btn.onClick.AddListener(nav.Back);
         }
 
         // ---------- Primitives ----------
+
+        /// <summary>Applies the rounded sliced sprite (if available) and a tint to an Image.</summary>
+        private static void Panel(Image img, Color color)
+        {
+            if (_round != null) { img.sprite = _round; img.type = Image.Type.Sliced; }
+            img.color = color;
+        }
 
         private static GameObject MakeImage(string name, RectTransform parent, Vector2 size, Vector2 pos)
         {
@@ -263,7 +331,8 @@ namespace MagicVillageDash.Editor
             return go;
         }
 
-        private static TMP_Text MakeText(string name, RectTransform parent, Vector2 size, Vector2 pos, float fontSize, FontStyles style)
+        private static TMP_Text MakeText(string name, RectTransform parent, Vector2 size, Vector2 pos,
+                                         float fontSize, TMP_FontAsset font, Color color)
         {
             var go = new GameObject(name, typeof(RectTransform));
             GameObjectUtility.SetParentAndAlign(go, parent.gameObject);
@@ -272,11 +341,11 @@ namespace MagicVillageDash.Editor
             rt.anchoredPosition = pos;
             var t = go.AddComponent<TextMeshProUGUI>();
             t.fontSize = fontSize;
-            t.fontStyle = style;
             t.alignment = TextAlignmentOptions.Center;
-            t.color = Color.white;
+            t.color = color;
             t.enableWordWrapping = true;
-            if (TMP_Settings.defaultFontAsset != null) t.font = TMP_Settings.defaultFontAsset;
+            t.overflowMode = TextOverflowModes.Ellipsis;
+            if (font != null) t.font = font;
             return t;
         }
 

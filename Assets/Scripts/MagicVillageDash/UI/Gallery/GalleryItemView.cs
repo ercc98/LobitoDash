@@ -17,6 +17,10 @@ namespace MagicVillageDash.UI.Gallery
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_Text descriptionText;
 
+        [Header("Earned state")]
+        [Tooltip("Gold frame / ribbon shown once the entry is earned. Hidden while locked.")]
+        [SerializeField] private GameObject earnedFrame;
+
         [Header("Locked state")]
         [Tooltip("Dim overlay / lock badge shown while the entry isn't earned yet.")]
         [SerializeField] private GameObject lockedOverlay;
@@ -59,6 +63,9 @@ namespace MagicVillageDash.UI.Gallery
 
             if (descriptionText != null)
                 descriptionText.text = reveal ? description : "Keep playing to discover this one.";
+
+            if (earnedFrame != null)
+                earnedFrame.SetActive(owned);
 
             if (lockedOverlay != null)
                 lockedOverlay.SetActive(!owned);

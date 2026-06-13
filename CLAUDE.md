@@ -53,7 +53,10 @@ There is **no** `Assets/Scripts/ErccDev/` folder anymore — that tooling now co
     `IAchievementService`/`ICollectionService` for owned-vs-locked state (achievements also show 0..1
     progress); `GalleryItemView` is the reused card; `GallerySceneNav` routes in/out. Read-only.
     Build/regenerate the scene from **MagicVillageDash ▸ Build Rewards Gallery Scene**
-    (`Editor/RewardsGallerySceneBuilder`).
+    (`Editor/RewardsGallerySceneBuilder`); the design matches the cozy Wolfland style (parchment cards,
+    Fredoka/CherryBombOne fonts, gold earned-frames). **MagicVillageDash ▸ Create Sample Rewards &
+    Achievements** (`Editor/SampleRewardsBuilder`) authors new achievement→reward pairs whose 3D payoff
+    is an IgnoreFolder prop, wiring them into both catalogs and the RunnerScene `AchievementManager`.
   - `Tutorial/` — swipe-driven `TutorialManager`, `TutorialOverlayUI`, `TutorialTriggerStep`, context builders.
   - `Pause/` — `PauseApplier`, `PauseServiceBehaviour`.
   - `Settings/` — `GraphicsQualityManager`, `SettingsApplier` + `ISettingsApplier`.
