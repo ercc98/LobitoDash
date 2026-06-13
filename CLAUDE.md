@@ -48,6 +48,12 @@ There is **no** `Assets/Scripts/ErccDev/` folder anymore — that tooling now co
   - `Audio/` — `AudioManager` + `IAudioManager`, `SoundIds`.
   - `Camera/` — `CameraShaker`.
   - `UI/` — HUD texts (`Coin/Distance/Score`), `SimpleGameMenus`, `PauseMenuUI`, `SettingsMenuUI`, `CoinComboUI`.
+    `UI/Gallery/` — the rewards/achievements gallery (`RewardsGalleryScene`): `RewardsGalleryController`
+    fills a scrollable grid from `AchievementCatalog` + `CollectionCatalog`, asking the live
+    `IAchievementService`/`ICollectionService` for owned-vs-locked state (achievements also show 0..1
+    progress); `GalleryItemView` is the reused card; `GallerySceneNav` routes in/out. Read-only.
+    Build/regenerate the scene from **MagicVillageDash ▸ Build Rewards Gallery Scene**
+    (`Editor/RewardsGallerySceneBuilder`).
   - `Tutorial/` — swipe-driven `TutorialManager`, `TutorialOverlayUI`, `TutorialTriggerStep`, context builders.
   - `Pause/` — `PauseApplier`, `PauseServiceBehaviour`.
   - `Settings/` — `GraphicsQualityManager`, `SettingsApplier` + `ISettingsApplier`.
@@ -56,6 +62,7 @@ There is **no** `Assets/Scripts/ErccDev/` folder anymore — that tooling now co
     structure is built so the den rebuilds identically next session).
   - `Achievements/` — `AchievementManager` (on Foundation's `AchievementManagerBase`), `AchievementContextBuilder`,
     `Conditions/` (coins/distance/score reached), `Rewards/` (`CoinReward`, `EventBusReward`); persisted via `GameDataService`.
+    `AchievementCatalog` (SO mirroring `CollectionCatalog`) lists every achievement so read-only UI (the gallery) can enumerate locked+unlocked.
   - `Collections/` — `CollectionManager` (on Foundation's `CollectionManagerBase`, lives as a prefab —
     `Assets/Prefabs/CollectionManager.prefab`), `CollectionShowcase`, `ModelCollectionEntry`,
     `CollectionCatalog` (shared list of every entry); relics (`Collectibles/RelicCollectible`,
