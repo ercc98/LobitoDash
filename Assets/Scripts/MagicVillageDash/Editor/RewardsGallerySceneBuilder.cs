@@ -144,9 +144,11 @@ namespace MagicVillageDash.Editor
 
         private static void CreateEventSystem()
         {
+            // New Input System: drive UI through InputSystemUIInputModule, not the legacy
+            // StandaloneInputModule (which throws once Active Input Handling is "Input System Package").
             var go = new GameObject("EventSystem",
                 typeof(UnityEngine.EventSystems.EventSystem),
-                typeof(UnityEngine.EventSystems.StandaloneInputModule));
+                typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
         }
 
         private static Canvas CreateCanvas()

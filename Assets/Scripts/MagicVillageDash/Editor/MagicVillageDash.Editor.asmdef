@@ -4,7 +4,8 @@
     "references": [
         "MagicVillageDash",
         "ErccDev.Foundation",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [
         "Editor"

@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DenScene.unity
     guid: e82ac5f8a77d55741b367982803f3df1
+  - enabled: 1
+    path: Assets/Scenes/RewardsGalleryScene.unity
+    guid: 4e6d3e357865bcf4eb1bd16ac171c944
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 8d43034bf14a1254d957ac953b7624de, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
