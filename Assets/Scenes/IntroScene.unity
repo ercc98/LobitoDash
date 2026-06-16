@@ -576,7 +576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eda9139250ac52a4c9fe4876f07d345a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ErccDev.Bootstrap.LogoSceneController
-  nextSceneName: RunnerScene
+  nextSceneName: MainMenuScene
   preferSceneLoader: 1
   waitForPrepare: 1
   waitForFirstFrame: 1

@@ -91,7 +91,7 @@ namespace MagicVillageDash.UI
 
         private void OnQuitClicked()
         {
-            SceneLoader.Instance.LoadSceneAsync("IntroScene");
+            SceneLoader.Instance.LoadSceneAsync("MainMenuScene");
             AudioManager.Instance.Play(UIId.Back);
         }
 
