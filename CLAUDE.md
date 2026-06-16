@@ -60,6 +60,11 @@ There is **no** `Assets/Scripts/ErccDev/` folder anymore — that tooling now co
     **MagicVillageDash ▸ Generate Reward Icons** (`Editor/RewardIconGenerator`) bakes a transparent
     `<Prefab>_Icon.png` thumbnail for any prefab in `Prefabs/Rewards` missing one and assigns it to the
     matching collection entry (by shared name tokens) when that entry still uses the paw placeholder.
+    **MagicVillageDash ▸ Test ▸ Reset Save Data** (`Editor/TestDataResetter`) wipes persistent test
+    state — clears the `AchievementData`/`CollectionProgressData`/`DenPlacementData`/`RunStatsData` SO
+    assets *and* deletes the shared `playerdata.json` in `persistentDataPath` (both are needed, else the
+    next load re-hydrates the assets). Sub-items reset just the SOs or just the JSON. Run with Play mode
+    stopped, or `GameDataService`'s save-on-quit re-writes the file.
   - `Tutorial/` — swipe-driven `TutorialManager`, `TutorialOverlayUI`, `TutorialTriggerStep`, context builders.
   - `Pause/` — `PauseApplier`, `PauseServiceBehaviour`.
   - `Settings/` — `GraphicsQualityManager`, `SettingsApplier` + `ISettingsApplier`.
