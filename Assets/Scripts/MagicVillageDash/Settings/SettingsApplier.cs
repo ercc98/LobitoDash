@@ -6,6 +6,7 @@ namespace MagicVillageDash.Settings
 {
     public class SettingsApplier : MonoBehaviour, ISettingsApplier
     {
+        public static SettingsApplier _instance;
         [Header("Apply on startup")]
         [SerializeField] private SettingsData settings; // applied once on Start so saved settings take effect before the menu opens
 
@@ -16,6 +17,14 @@ namespace MagicVillageDash.Settings
 
         private void Awake()
         {
+            if (_instance != null && _instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            _instance = this;
+
+            DontDestroyOnLoad(gameObject);
             audioManager = audioManagerProvider as AudioManager;
             if (audioManager == null)
             {
@@ -42,6 +51,11 @@ namespace MagicVillageDash.Settings
 
             GraphicsQualityManager.Apply(settings.QualityLevel);
 
+            if (audioManager == null)
+            {
+                audioManager = FindFirstObjectByType<AudioManager>();
+            }
+            
             audioManager.SetMusicVolume(settings.MusicVolume);
             audioManager.SetSfxVolume(settings.SfxVolume);
             audioManager.SetAmbientVolume(settings.AmbientVolume);

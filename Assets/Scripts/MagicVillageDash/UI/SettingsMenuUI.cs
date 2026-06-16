@@ -146,9 +146,10 @@ namespace MagicVillageDash.UI
         private void OnQuality(int idx)         { if (suppressEvents) return; settings.QualityLevel = idx; Apply(); }
         private void OnVibration(bool on) { if (suppressEvents) return; settings.Vibration = on; Apply(); }
 
-        private void OnCloseButtonClicked()
+        public void OnCloseButtonClicked()
         {
-            gameObject.SetActive(false);
+            if(settingsMenuRoot != null)
+                settingsMenuRoot.SetActive(false);
             AudioManager.Instance.Play(UIId.Continue);
         }
     }
