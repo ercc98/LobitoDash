@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7890fa555e368254d8c32e6845fec8f3, type: 3}
-  m_Name: Reward_UnlockSwing
-  m_EditorClassIdentifier: ErccDev.Foundation::ErccDev.Foundation.Core.Collection.UnlockCollectionEntryReward
-  rewardId: swing
-  entryId: swing
+  m_Script: {fileID: 11500000, guid: ab830dc45f4de2446a803662be72db2b, type: 3}
+  m_Name: Cond_marathon_wolf
+  m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Achievements.Conditions.DistanceReachedCondition
+  targetMeters: 1500

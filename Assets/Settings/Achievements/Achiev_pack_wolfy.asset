@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa7484842a75ba74fb8dbdb2454d2204, type: 3}
-  m_Name: Achiev_Collect500Coins
+  m_Name: Achiev_pack_wolfy
   m_EditorClassIdentifier: ErccDev.Foundation::ErccDev.Foundation.Core.Achievements.AchievementDefinition
-  achievementId: collect_500_coins
+  achievementId: pack_wolfy
   hidden: 0
-  title: First Coins
-  description: Collect 500 coins in a run.
-  icon: {fileID: 21300000, guid: 790e37e27ea8499992f7b342b73c9dbb, type: 3}
-  condition: {fileID: 11400000, guid: 26c4268236694bb4aa551c94c9901444, type: 2}
+  title: Pack Wolfy
+  description: Reach a score of 100.
+  icon: {fileID: 21300000, guid: 049e145ba838f7b4db356629876a7241, type: 3}
+  condition: {fileID: 11400000, guid: 41e950841f7f0ba4d957b13b1d7db3b0, type: 2}
   rewards:
-  - {fileID: 11400000, guid: 3875fc9209d943841b9652865a55758d, type: 2}
+  - {fileID: 11400000, guid: 38ff30c02c3418c48adb756a77d2dddd, type: 2}

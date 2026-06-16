@@ -15,7 +15,7 @@ MonoBehaviour:
   entryId: tent
   hidden: 0
   title: Tent
-  description: Tent Description
+  description: Beautiful Tent
   icon: {fileID: 21300000, guid: 826d6101463d40808bae75523909e668, type: 3}
   rewards:
   - {fileID: 11400000, guid: 3875fc9209d943841b9652865a55758d, type: 2}

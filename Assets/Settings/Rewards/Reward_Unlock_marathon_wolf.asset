@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7890fa555e368254d8c32e6845fec8f3, type: 3}
-  m_Name: Reward_UnlockOutlookPost
+  m_Name: Reward_Unlock_marathon_wolf
   m_EditorClassIdentifier: ErccDev.Foundation::ErccDev.Foundation.Core.Collection.UnlockCollectionEntryReward
-  rewardId: outlookpost
-  entryId: outlookpost
+  rewardId: marathon_wolf
+  entryId: marathon_wolf

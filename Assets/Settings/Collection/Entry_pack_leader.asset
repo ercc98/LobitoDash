@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8d598e620a21f04b902b5a1ed673500, type: 3}
-  m_Name: Entry_OutlookPost
+  m_Name: Entry_pack_leader
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Collections.ModelCollectionEntry
-  entryId: outlookpost
+  entryId: pack_leader
   hidden: 0
-  title: OutlookPost
-  description: OutlookPost description
-  icon: {fileID: 21300000, guid: 4fda8c3c32314163b352290eb98194c9, type: 3}
+  title: Hay Seat
+  description: A comfy hay bale to gather the pack around.
+  icon: {fileID: 21300000, guid: aaa0909cf628cd34a96a96131d69e566, type: 3}
   rewards:
-  - {fileID: 11400000, guid: 9b17215017de4d84fb458b8f4d33b381, type: 2}
-  modelPrefab: {fileID: 1792639065286952602, guid: d7d2bc3481a7fff46a053b41d0dd13f0, type: 3}
+  - {fileID: 11400000, guid: fa03b9846014fe2499678279d2f507f2, type: 2}
+  modelPrefab: {fileID: 1850077579683682285, guid: 6f175b6b4523ee440a6ecc73cf6e6c94, type: 3}

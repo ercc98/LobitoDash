@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab830dc45f4de2446a803662be72db2b, type: 3}
   m_Name: Cond_Dist500
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Achievements.Conditions.DistanceReachedCondition
-  targetMeters: 100
+  targetMeters: 500

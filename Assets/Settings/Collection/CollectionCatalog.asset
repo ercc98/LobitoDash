@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: ErccDev.Foundation::ErccDev.Foundation.Core.Collection.CollectionCatalog
   entries:
   - {fileID: 11400000, guid: 038fe0ab5a72a4444af46c11ddd9bf70, type: 2}
-  - {fileID: 11400000, guid: a5f5178f5806c2344ac32e23b5191004, type: 2}
+  - {fileID: 11400000, guid: 3519581640ccf5b4cb5ba66e9abcae56, type: 2}
+  - {fileID: 11400000, guid: 25f05b28ecdb83245a4428f20157e2d8, type: 2}
   - {fileID: 11400000, guid: e933dbc0366feda47a4bca3ad0d3ec1d, type: 2}
+  - {fileID: 11400000, guid: 0bdca1a06d9985f44a8a6407a0222418, type: 2}
+  - {fileID: 11400000, guid: a5f5178f5806c2344ac32e23b5191004, type: 2}
   - {fileID: 11400000, guid: 747e3f351d2779444b1a7dc24b505775, type: 2}
   - {fileID: 11400000, guid: 18e390d58f19a974085bfcc6acc57284, type: 2}

@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8d598e620a21f04b902b5a1ed673500, type: 3}
-  m_Name: Entry_Well
+  m_Name: Entry_coin_hoarder
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Collections.ModelCollectionEntry
-  entryId: well
+  entryId: coin_hoarder
   hidden: 0
-  title: Well
-  description: Cozy Well
-  icon: {fileID: 21300000, guid: 1746186405cc4811ac3a2d3030b5ab2d, type: 3}
+  title: Barrel
+  description: A sturdy barrel for the den's spoils.
+  icon: {fileID: 21300000, guid: f2d5ae4270ffca648a1a1a6544c1c89e, type: 3}
   rewards:
-  - {fileID: 11400000, guid: a2910655d1beebe4984440f3a548d64d, type: 2}
-  modelPrefab: {fileID: 8892356786337168045, guid: 0dee115d5c503f241b6a0733b8713559, type: 3}
+  - {fileID: 11400000, guid: ab523db1c151ec147814e15fb1f89239, type: 2}
+  modelPrefab: {fileID: 4550537838352182025, guid: b26e94da183978048b6e9e032cd49ef2, type: 3}

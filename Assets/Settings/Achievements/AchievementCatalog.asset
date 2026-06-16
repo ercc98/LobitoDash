@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: AchievementCatalog
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Achievements.AchievementCatalog
   achievements:
+  - {fileID: 11400000, guid: 12d31226f7b088f448443670b171c7e9, type: 2}
   - {fileID: 11400000, guid: e2a835cc683d945428b65772093ca952, type: 2}
   - {fileID: 11400000, guid: 5f887f7f6a827ab4bb3e7b20c78eb7a7, type: 2}
   - {fileID: 11400000, guid: 76a942bf91296f047aeedba4a3269281, type: 2}
   - {fileID: 11400000, guid: ef3e7f2e82884ea438d5d4d730dfd7ba, type: 2}
+  - {fileID: 11400000, guid: efc201486bae7dc4fb1f50c992263bb2, type: 2}
+  - {fileID: 11400000, guid: b926f7ef90f7025449f65e80d54a73be, type: 2}

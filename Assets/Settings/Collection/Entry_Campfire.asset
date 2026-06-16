@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Collections.ModelCollectionEntry
   entryId: campfire
   hidden: 0
-  title: campfire
-  description: Campfire description
+  title: Campfire
+  description: Campfire place
   icon: {fileID: 21300000, guid: 3e883a5daf294a68b2578d347b64ec51, type: 3}
   rewards:
   - {fileID: 11400000, guid: 91ea3903e2b5e2a40a41305f8f53c860, type: 2}

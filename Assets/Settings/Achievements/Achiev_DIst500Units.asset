@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7484842a75ba74fb8dbdb2454d2204, type: 3}
   m_Name: Achiev_DIst500Units
   m_EditorClassIdentifier: ErccDev.Foundation::ErccDev.Foundation.Core.Achievements.AchievementDefinition
-  achievementId: dist_100_units
+  achievementId: dist_500_units
   hidden: 0
   title: FIrst Steps
-  description: Run First 100 meters
+  description: Run First 500 meters
   icon: {fileID: 21300000, guid: 2a1accb2fb75489d953c026f0cf422ab, type: 3}
   condition: {fileID: 11400000, guid: e9c4f8c2acef0c64499b86393cae3ef3, type: 2}
   rewards:
