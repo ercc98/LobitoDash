@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using MagicVillageDash.Collections;
+using TMPro;
 
 namespace MagicVillageDash.Den.Placement
 {
@@ -15,6 +16,7 @@ namespace MagicVillageDash.Den.Placement
     {
         [SerializeField] private Button button;
         [SerializeField] private Image icon;
+        [SerializeField] private TMP_Text textName;
         [Tooltip("Optional: shown when this cell has no item to display (tray smaller than the row).")]
         [SerializeField] private GameObject emptyState;
 
@@ -38,6 +40,7 @@ namespace MagicVillageDash.Den.Placement
                 icon.enabled = has;
                 icon.sprite = has ? entry.icon : null;
             }
+            if(textName != null) textName.text = has ? entry.title : "";
             if (emptyState != null) emptyState.SetActive(!has);
             if (button != null) button.interactable = has;
         }
