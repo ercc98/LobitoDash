@@ -1,13 +1,15 @@
 using System.Collections;
+using ErccDev.Foundation.Audio;
 using UnityEngine;
 
 namespace MagicVillageDash.Audio
 {
     /// <summary>
-    /// Kicks off looping music/ambient when a scene opens. Drop it on any scene that
-    /// has no run lifecycle to drive audio (e.g. the den). AudioManager is a persistent
-    /// singleton, so it may not exist yet if you enter the scene directly in the editor —
-    /// we wait a few frames for it.
+    /// Drives looping music/ambient for a scene that has no run lifecycle to do it
+    /// (e.g. the den). Reconciles on scene entry instead of blindly restarting: if the
+    /// song this scene wants is already playing, it's left alone (no interruption); if
+    /// it's different, it switches. AudioManager is a persistent singleton, so it may not
+    /// exist yet when entering a scene directly in the editor — we wait a few frames for it.
     /// </summary>
     public class SceneAudioStarter : MonoBehaviour
     {
@@ -21,21 +23,7 @@ namespace MagicVillageDash.Audio
         [Header("How long to wait for AudioManager")]
         [SerializeField, Min(0)] private int maxWaitFrames = 30;
 
-        [Header("Stop the loops when leaving the scene")]
-        [SerializeField] private bool stopOnSceneExit = true;
-
         private void OnEnable() => StartCoroutine(StartWhenReady());
-
-        private void OnDisable()
-        {
-            if (!stopOnSceneExit) return;
-
-            var audio = AudioManager.Instance;
-            if (audio == null) return;
-
-            if (playMusic)   audio.StopLoop(music);
-            if (playAmbient) audio.StopLoop(ambient);
-        }
 
         private IEnumerator StartWhenReady()
         {
@@ -50,8 +38,19 @@ namespace MagicVillageDash.Audio
                 yield break;
             }
 
-            if (playMusic)   audio.PlayLoop(music);
-            if (playAmbient) audio.PlayLoop(ambient);
+            // Music: keep playing if it's already the same loop, switch if different, stop if unwanted.
+            if (playMusic)
+            {
+                if (!audio.IsLoopPlaying(music)) audio.PlayLoop(music);
+            }
+            else audio.StopLoop(SoundCategory.Music);
+
+            // Ambient: same reconcile-on-entry behaviour.
+            if (playAmbient)
+            {
+                if (!audio.IsLoopPlaying(ambient)) audio.PlayLoop(ambient);
+            }
+            else audio.StopLoop(SoundCategory.Ambient);
         }
     }
 }

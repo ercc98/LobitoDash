@@ -24,6 +24,19 @@ namespace MagicVillageDash.Audio
         public void PlayLoop(MusicId   id) => PlayLoop(id, SoundCategory.Music);
         public void PlayLoop(SfxId     id) => PlayLoop(id, SoundCategory.SFX);
 
+        // Is this exact clip already looping in its category? Lets callers avoid
+        // restarting a loop that's already playing (e.g. same song across scenes).
+        public bool IsLoopPlaying(MusicId   id) => IsLoopPlaying(id.ToString(), SoundCategory.Music);
+        public bool IsLoopPlaying(AmbientId id) => IsLoopPlaying(id.ToString(), SoundCategory.Ambient);
+
+        private bool IsLoopPlaying(string id, SoundCategory cat)
+        {
+            var src   = GetSource(cat);
+            var entry = GetGroup(cat)?.Get(id);
+            return src != null && entry?.clip != null &&
+                   src.isPlaying && src.loop && src.clip == entry.clip;
+        }
+
         public override void StopLoop(SoundCategory cat)=> base.StopLoop(cat);
         public void StopLoop(MusicId id)                => StopLoop(id, SoundCategory.Music);
         public void StopLoop(AmbientId id)              => StopLoop(id, SoundCategory.Ambient);
