@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6133257215615420886}
   - component: {fileID: 2946758122755260563}
   m_Layer: 0
-  m_Name: NewChunkFactory 8
+  m_Name: NewChunkIceForestFactory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebd9133d4b9c27f40bee7618d3ff475d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.World.ChunkFactory
-  prefab: {fileID: 8251415617555335427, guid: ecf9b74792dfe9b479898c79ee0c92c1, type: 3}
+  prefab: {fileID: 6004790731023834154, guid: a673cbd54ed53e14197725031ff40743, type: 3}
   initialPoolSize: 2
