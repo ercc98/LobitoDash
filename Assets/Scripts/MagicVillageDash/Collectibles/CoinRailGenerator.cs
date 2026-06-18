@@ -21,6 +21,8 @@ namespace MagicVillageDash.Collectibles
         [SerializeField] private float minStraightZ = 8f;      // min straight distance before a turn
         [SerializeField] private float maxStraightZ = 18f;     // max straight distance before a turn
         [SerializeField] private float transitionLengthZ = 12f;// how long to move from lane A to B
+        [Range(0, 1)]
+        [SerializeField] private float laneChangeChance = 0.35f;// chance per chunk the rail drifts to an adjacent lane (variety, not obstacle dodging)
         [SerializeField] private float coinHeight = 1.0f;      // Y position for coins
 
         [Header("Obstacle Jump Arc")]
@@ -66,7 +68,7 @@ namespace MagicVillageDash.Collectibles
             if (!_initialized) InitializeAt(zStart);
 
             float z = zStart;
-            PlanNextSegment(zStart, blockedLanes);
+            PlanNextSegment(zStart);
             while (z < zEnd)
             {
                 // Compute X at this Z
@@ -141,22 +143,22 @@ namespace MagicVillageDash.Collectibles
             iCoinFactory = coinFactoryProvider as IFactory<CoinCollectible> ?? FindAnyObjectByType<CoinFactory>(FindObjectsInactive.Exclude);
         }
 
-        void PlanNextSegment(float zStart, Dictionary<int, float[]> blockedLanes)
+        void PlanNextSegment(float zStart)
         {
-            
-            if (IsLaneBlocked(blockedLanes, _currentLane))
+            // We no longer flee blocked lanes: coins stay on their lane and arc over
+            // obstacles (see ArcLift). Lane changes are now just occasional variety.
+            if (Random.value < laneChangeChance)
             {
-                // Begin a transition to adjacent lane
                 int to = ChooseAdjacentLane(_currentLane);
                 _segment = SegmentType.Transition;
                 _segStartZ = zStart;
                 _segEndZ = _segStartZ + transitionLengthZ;
                 _targetLane = to;
-                Debug.Log($"Planning transition from lane {_currentLane} to {to} starting at Z={_segStartZ:F1}");
             }
             else
             {
-                _segment = SegmentType.Straight;                
+                _segment = SegmentType.Straight;
+                _targetLane = _currentLane;
             }
         }
 

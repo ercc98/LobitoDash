@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3308798085630863942}
   - component: {fileID: 6902623293586693}
   - component: {fileID: 5567379144188266785}
+  - component: {fileID: 5567379144188266799}
   m_Layer: 7
   m_Name: GoldenCoinsCollectible
   m_TagString: Coin
@@ -125,11 +126,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e752b6fbe4b618247bc78d6133bd149f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Collectibles.CoinCollectible
   value: 1
   playerTag: Player
   collectedCoinFactory: {fileID: 0}
+--- !u!114 &5567379144188266799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5371218391599615764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7e4c1a98d3f4e2fa6c0d59e2b1f4a87, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shadow: {fileID: 7687424113304638019}
+  groundWorldY: -0.3
 --- !u!1 &6859290209892896876
 GameObject:
   m_ObjectHideFlags: 0
