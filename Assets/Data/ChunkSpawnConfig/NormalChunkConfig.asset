@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da74c0f51d50114f9d89558784cf9d2, type: 3}
   m_Name: NormalChunkConfig
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.ChunkSpawnConfig
-  keepAhead: 7
+  keepAhead: 4
   despawnBehindDistance: 60
   startAheadDistance: -10

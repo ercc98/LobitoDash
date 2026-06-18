@@ -20,7 +20,7 @@ namespace MagicVillageDash.Collectibles
             {
                 float startZ = chunk.transform.position.z;
                 float endZ = startZ + Mathf.Max(0.01f, chunk.ChunkLength);
-                generator.FillRange(chunk.transform, startZ, endZ);
+                generator.FillRange(chunk.transform, startZ, endZ, chunk.BlockedLanes);
             }
 
         }

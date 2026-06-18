@@ -1,7 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace MagicVillageDash.Obstacles
 {
+    /// <summary>Where an obstacle ended up: which lane and at what Z. Used by the coin pass.</summary>
+    public readonly struct ObstaclePlacement
+    {
+        public readonly int Lane;
+        public readonly float Z;
+        public ObstaclePlacement(int lane, float z) { Lane = lane; Z = z; }
+    }
+
     public sealed class ObstacleRailGenerator : MonoBehaviour
     {
         [Header("Factories")]
@@ -18,24 +28,32 @@ namespace MagicVillageDash.Obstacles
         [Range(1, 5)][SerializeField] private int obstacleLinePerChunk = 2;
         [SerializeField] private bool ensureAtLeastOneSafeLane = true;
         
-        public void FillRange(Transform parent, float chunkLength, float zStart, float zEnd)
+        /// <summary>
+        /// Fills the chunk with obstacles and returns the per-lane blocked mask
+        /// (index = lane, true = an obstacle lives in that lane for this chunk).
+        /// Callers (e.g. the coin pass) can keep collectibles on the safe lanes.
+        /// </summary>
+        public Dictionary<int, float[]> FillRange(Transform parent, float chunkLength, float zStart, float zEnd)
         {
-            if (laneCount <= 0) return;
+            if (laneCount <= 0) return null;
 
-            bool[] blocked = new bool[laneCount];
+            Dictionary<int, float[]> blocked = new Dictionary<int, float[]>();
+                
             float deltaObstaclePosition = chunkLength / obstacleLinePerChunk;
 
             SpawnObstacles(parent, blocked, deltaObstaclePosition, zStart);
 
             if (ensureAtLeastOneSafeLane)
                 EnsureOneSafeLane(parent, blocked);
+
+            return blocked;
         }
 
-        void SpawnObstacles(Transform parent, bool[] blocked, float deltaObstaclePosition, float zStart)
+        void SpawnObstacles(Transform parent, Dictionary<int, float[]> blocked, float deltaObstaclePosition, float zStart)
         {
             for (int i = 0; i < laneCount; i++)
             {
-                if (blocked[i] || obstacleFactories == null) continue;
+                if (obstacleFactories == null) continue;
 
                 for (int j = 0; j < obstacleLinePerChunk; j++)
                 {
@@ -49,29 +67,32 @@ namespace MagicVillageDash.Obstacles
                             var pos = new Vector3(x, parent.position.y, z);
 
                             obstacleFactory.Spawn(parent, pos, Quaternion.identity, true);
-                            blocked[i] = true;
+                            if(blocked.ContainsKey(i))
+                                blocked[i][j] = z - zStart; // relative Z of the obstacle in this chunk
+                            else
+                                blocked.Add(i, new float[obstacleLinePerChunk]);
                         }
                     }
                 }
             }
         }
 
-        void EnsureOneSafeLane(Transform parent, bool[] blocked)
+        void EnsureOneSafeLane(Transform parent, Dictionary<int, float[]> blocked)
         {
             if (HasAnySafeLane(blocked)) return;
 
-            int idx = Random.Range(0, blocked.Length);
+            int idx = Random.Range(0, blocked.Count);
             var hazard = FindHazardClosestToLaneX(parent, idx);
             if (hazard == null) return;
 
             RecycleHazard(hazard);
-            blocked[idx] = false;
+            blocked.Remove(idx);
         }
 
-        bool HasAnySafeLane(bool[] blocked)
+        bool HasAnySafeLane(Dictionary<int, float[]> blocked)
         {
-            for (int i = 0; i < blocked.Length; i++)
-                if (!blocked[i]) return true;
+            for (int i = 0; i < blocked.Count; i++)
+                if (blocked.Count < laneCount) return true;
             return false;
         }
 

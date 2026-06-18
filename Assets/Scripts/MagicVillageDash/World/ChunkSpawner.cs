@@ -145,8 +145,9 @@ namespace MagicVillageDash.World
             ChunkRoot chunk = factory.Spawn(new Vector3(0f, 0f, zPosition), Quaternion.identity, worldMover.transform);
             chunk.Biome = biomeDirector.CurrentBiome;
             chunk.InjectFactories(coinFactory, obstacleFactory, relicFactory);
-            coinFiller.FillChunk(chunk);
+            // Obstacles first so the chunk's safe-lane mask exists before coins fill.
             if (finalSpawnObstacles && chunk.CanSpawnObstacles) obstacleFiller.FillChunk(chunk);
+            coinFiller.FillChunk(chunk);
             relicFiller?.FillChunk(chunk);
             // Mark the owner factory so we can recycle correctly
             chunk.OwnerFactory = factory;

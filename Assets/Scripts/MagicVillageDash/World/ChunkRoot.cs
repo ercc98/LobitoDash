@@ -39,6 +39,15 @@ namespace MagicVillageDash.World
         }
         public ChunkFactory OwnerFactory { get; internal set; }
 
+        /// <summary>
+        /// Per-lane obstacle mask for this chunk (index = lane, true = blocked).
+        /// Set by the obstacle pass; read by the coin pass to keep coins on safe lanes.
+        /// Null means nothing is blocked (no obstacles this chunk).
+        /// </summary>
+        public Dictionary<int, float[]> BlockedLanes { get; private set; }
+
+        public void SetBlockedLanes(Dictionary<int, float[]> lanes) => BlockedLanes = lanes;
+
         /// <summary>Biome this chunk was spawned for; set by ChunkSpawner.</summary>
         public BiomeDefinition Biome { get; internal set; }
 
@@ -68,6 +77,7 @@ namespace MagicVillageDash.World
 
         public void ResetForPool()
         {
+            BlockedLanes = null; // forget last run's safe-lane mask before reuse
             // Recycle any leftover residents without scanning transforms
             ResetCoinsForPool();
             ResetObstaclesForPool();

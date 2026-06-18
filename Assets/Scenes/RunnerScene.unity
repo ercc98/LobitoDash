@@ -1880,7 +1880,7 @@ MonoBehaviour:
   laneCount: 3
   laneWidth: 2.2
   laneCenterX: 0
-  obstacleChancePerLane: 0.153
+  obstacleChancePerLane: 0.713
   obstacleLinePerChunk: 2
   ensureAtLeastOneSafeLane: 1
 --- !u!4 &161715504
@@ -3657,7 +3657,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 3.3964233, y: 73.8196}
+  m_AnchoredPosition: {x: 3.3964844, y: 73.8196}
   m_SizeDelta: {x: 6.7927, y: 1270.8425}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &252512039
@@ -34239,7 +34239,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 96.6
+  m_fontSize: 67.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -43228,7 +43228,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 375
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
@@ -50869,7 +50869,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00018310547, y: 101}
+  m_AnchoredPosition: {x: 0.00024414062, y: 101}
   m_SizeDelta: {x: -309.58, y: -1607.3444}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1525004543
@@ -56046,10 +56046,10 @@ MonoBehaviour:
   laneCount: 3
   laneWidth: 2.2
   laneCenterX: 0
-  coinSpacingZ: 8
-  minStraightZ: 25
-  maxStraightZ: 40
-  transitionLengthZ: 1
+  coinSpacingZ: 5
+  minStraightZ: 10
+  maxStraightZ: 20
+  transitionLengthZ: 10
   coinHeight: 1.5
 --- !u!4 &1927859380
 Transform:

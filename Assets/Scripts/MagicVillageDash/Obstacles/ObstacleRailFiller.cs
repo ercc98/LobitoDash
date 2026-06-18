@@ -19,7 +19,9 @@ namespace MagicVillageDash.Obstacles
             {
                 float startZ = chunk.transform.position.z;
                 float endZ = startZ + Mathf.Max(0.01f, chunk.ChunkLength);
-                generator.FillRange(chunk.transform, chunk.ChunkLength, startZ, endZ);
+                // Hand the blocked-lane mask to the chunk so the coin pass can read it.
+                var blocked = generator.FillRange(chunk.transform, chunk.ChunkLength, startZ, endZ);
+                chunk.SetBlockedLanes(blocked);
             }
 
         }

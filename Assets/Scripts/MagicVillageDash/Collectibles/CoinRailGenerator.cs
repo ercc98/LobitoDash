@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ErccDev.Foundation.Core.Factories;
 using UnityEngine;
 
@@ -50,34 +51,69 @@ namespace MagicVillageDash.Collectibles
         /// <summary>
         /// Spawn coins for the given Z range into the given parent (usually the chunk transform).
         /// Assumes chunks are created in increasing Z order.
+        /// <paramref name="blockedLanes"/> (index = lane) marks lanes occupied by obstacles in
+        /// this chunk; coins falling on a blocked lane are skipped so the rail stays on safe lanes.
+        /// Pass null to spawn everywhere.
         /// </summary>
-        public void FillRange(Transform parent, float zStart, float zEnd)
+        public void FillRange(Transform parent, float zStart, float zEnd, Dictionary<int, float[]> blockedLanes = null)
         {
-            
             if (!_initialized) InitializeAt(zStart);
 
-            // Ensure monotonic coin Z
-            float z = Mathf.Max(zStart, _lastCoinZ + coinSpacingZ);
-            z = zStart;
-            PlanNextSegment();
-            while (z <= zEnd)
+            float z = zStart;
+            PlanNextSegment(zStart, blockedLanes);
+            while (z < zEnd)
             {
-
-                // Advance to next segment(s) if necessary
-                while (z > _segEndZ)
-                    PlanNextSegment();
-                
-
                 // Compute X at this Z
                 float x = (_segment == SegmentType.Straight)
                     ? LaneX(_currentLane)
                     : Mathf.Lerp(LaneX(_currentLane), LaneX(_targetLane), Mathf.InverseLerp(_segStartZ, _segEndZ, z));
 
-                // Spawn coin at (x, coinHeight, z), parented under the chunk (worldSpace: true)
-                iCoinFactory.Spawn( new Vector3(x, coinHeight, z), Quaternion.identity, parent);
-                _lastCoinZ = z;
+                if (IsLaneBlocked(blockedLanes, x))
+                {
+                    Debug.Log($"Lane {LaneOfX(x)} is blocked at Z={z:F1}; checking for nearby obstacles to decide whether to skip coin or spawn higher");
+                    for(int i = 0; i < blockedLanes[LaneOfX(x)].Length; i++)
+                    {
+                        Debug.Log($"Blocked lane {LaneOfX(x)} has obstacle at Z={blockedLanes[LaneOfX(x)][i]:F1}");
+                        if (IsInRange(blockedLanes[LaneOfX(x)][i], z - zStart, coinSpacingZ * 2))
+                        {
+                            Debug.Log($"Skipping coin at Z={z:F1} in lane {LaneOfX(x)} due to nearby obstacle at Z={blockedLanes[LaneOfX(x)][i]:F1}");
+                            iCoinFactory.Spawn(new Vector3(x, coinHeight + 2.0f, z), Quaternion.identity, parent);
+                        }
+                        else
+                        {
+                            iCoinFactory.Spawn(new Vector3(x, coinHeight, z), Quaternion.identity, parent);
+                            Debug.Log($"Spawning coin at Z={z:F1} in lane {LaneOfX(x)} despite blocked lane because no nearby obstacle");
+                        }
+                    }
+                    
+                }
+                else
+                    iCoinFactory.Spawn(new Vector3(x, coinHeight, z), Quaternion.identity, parent);
                 z += coinSpacingZ;
             }
+            _currentLane = _targetLane;
+        }
+        
+        bool IsInRange(float z1, float z2, float range)
+        {
+            Debug.Log($"Checking if Z={z1:F1} is within {range:F1} of Z={z2:F1}");
+            return Mathf.Abs(z1 - z2) <= range;
+        }
+
+        /// <summary>True when the lane nearest <paramref name="x"/> is flagged blocked.</summary>
+        bool IsLaneBlocked(Dictionary<int, float[]> blockedLanes, float x)
+        {
+            if (blockedLanes == null) return false;
+            int lane = LaneOfX(x);
+            return lane >= 0 && blockedLanes.ContainsKey(lane) && blockedLanes[lane] != null;
+        }
+
+        /// <summary>Nearest lane index for a world X (inverse of <see cref="LaneX"/>).</summary>
+        int LaneOfX(float x)
+        {
+            int mid = MidLane();
+            int idx = Mathf.RoundToInt((x - laneCenterX) / laneWidth) + mid;
+            return Mathf.Clamp(idx, 0, laneCount - 1);
         }
 
         // ------------- Internals -------------
@@ -96,24 +132,22 @@ namespace MagicVillageDash.Collectibles
             iCoinFactory = coinFactoryProvider as IFactory<CoinCollectible> ?? FindAnyObjectByType<CoinFactory>(FindObjectsInactive.Exclude);
         }
 
-        void PlanNextSegment()
+        void PlanNextSegment(float zStart, Dictionary<int, float[]> blockedLanes)
         {
-            if (_segment == SegmentType.Straight)
+            
+            if (IsLaneBlocked(blockedLanes, _currentLane))
             {
                 // Begin a transition to adjacent lane
                 int to = ChooseAdjacentLane(_currentLane);
                 _segment = SegmentType.Transition;
-                _segStartZ = _segEndZ;
+                _segStartZ = zStart;
                 _segEndZ = _segStartZ + transitionLengthZ;
                 _targetLane = to;
+                Debug.Log($"Planning transition from lane {_currentLane} to {to} starting at Z={_segStartZ:F1}");
             }
             else
             {
-                // Finish transition -> new straight
-                _currentLane = _targetLane;
-                _segment = SegmentType.Straight;
-                _segStartZ = _segEndZ;
-                _segEndZ = _segStartZ + Random.Range(minStraightZ, maxStraightZ);
+                _segment = SegmentType.Straight;                
             }
         }
 
