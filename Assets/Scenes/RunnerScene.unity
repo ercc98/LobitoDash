@@ -877,6 +877,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 31d5eed18e66a684d9e12b99ea9d6252, type: 2}
   - {fileID: 11400000, guid: 05646046e6e21884699bed387920693b, type: 2}
   - {fileID: 11400000, guid: d804e1789996abf4eabce837480860df, type: 2}
+  - {fileID: 11400000, guid: 1f253cc1f3e2d30468bdc7f6cca14e7a, type: 2}
   factoriesRoot: {fileID: 2055136344}
 --- !u!1001 &46490227
 PrefabInstance:
@@ -2598,6 +2599,7 @@ Transform:
   - {fileID: 64946991}
   - {fileID: 1886215720}
   - {fileID: 8763734691972362199}
+  - {fileID: 5151428396666372829}
   m_Father: {fileID: 1681949421}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &195829741
@@ -45101,7 +45103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8745603785228718127, guid: 333991e31e4f7fa49bfe35a2c6c3442a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -45762,7 +45764,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1515748477
 Transform:
   m_ObjectHideFlags: 0
@@ -56050,7 +56052,10 @@ MonoBehaviour:
   minStraightZ: 10
   maxStraightZ: 20
   transitionLengthZ: 10
+  laneChangeChance: 0.35
   coinHeight: 1.5
+  jumpArcHeight: 2
+  arcHalfWidthZ: 3.6
 --- !u!4 &1927859380
 Transform:
   m_ObjectHideFlags: 0
@@ -59549,6 +59554,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91f146a8209851641805b51ab20e7e5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MagicVillageDash::MagicVillageDash.Obstacles.ObstacleHazard
+--- !u!1001 &507451000852066266
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 194251694}
+    m_Modifications:
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5817072171569755276, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_Name
+      value: NewChunkPrefabForest 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5817072171569755276, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
 --- !u!1001 &529824040487161358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61783,6 +61849,10 @@ PrefabInstance:
     - target: {fileID: 8674863430305308013, guid: 76cbab0cb5e604a4199d429ad63e0ded, type: 3}
       propertyPath: m_Name
       value: NewChunkPrefabRiver
+      objectReference: {fileID: 0}
+    - target: {fileID: 8674863430305308013, guid: 76cbab0cb5e604a4199d429ad63e0ded, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -73886,6 +73956,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8195211003231642587}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &5151428396666372829 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3638088536863810901, guid: 93170214dc789c741a0ab2f4697ddabe, type: 3}
+  m_PrefabInstance: {fileID: 507451000852066266}
+  m_PrefabAsset: {fileID: 0}
 --- !u!65 &5159545251234093654
 BoxCollider:
   m_ObjectHideFlags: 0
