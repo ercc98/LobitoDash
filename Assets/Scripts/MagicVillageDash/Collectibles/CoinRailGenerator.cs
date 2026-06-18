@@ -23,6 +23,12 @@ namespace MagicVillageDash.Collectibles
         [SerializeField] private float transitionLengthZ = 12f;// how long to move from lane A to B
         [SerializeField] private float coinHeight = 1.0f;      // Y position for coins
 
+        [Header("Obstacle Jump Arc")]
+        [Tooltip("Peak extra height of the coin arc, added on top of coinHeight at the obstacle's Z.")]
+        [SerializeField] private float jumpArcHeight = 2.0f;
+        [Tooltip("How far (in Z) on each side of an obstacle the arc reaches before returning to coinHeight.")]
+        [SerializeField] private float arcHalfWidthZ = 3.6f;
+
         // ---- Runtime state (persistent across chunk fills) ----
         float _lastCoinZ = float.NegativeInfinity;
         bool  _initialized;
@@ -68,36 +74,39 @@ namespace MagicVillageDash.Collectibles
                     ? LaneX(_currentLane)
                     : Mathf.Lerp(LaneX(_currentLane), LaneX(_targetLane), Mathf.InverseLerp(_segStartZ, _segEndZ, z));
 
-                if (IsLaneBlocked(blockedLanes, x))
-                {
-                    Debug.Log($"Lane {LaneOfX(x)} is blocked at Z={z:F1}; checking for nearby obstacles to decide whether to skip coin or spawn higher");
-                    for(int i = 0; i < blockedLanes[LaneOfX(x)].Length; i++)
-                    {
-                        Debug.Log($"Blocked lane {LaneOfX(x)} has obstacle at Z={blockedLanes[LaneOfX(x)][i]:F1}");
-                        if (IsInRange(blockedLanes[LaneOfX(x)][i], z - zStart, coinSpacingZ * 2))
-                        {
-                            Debug.Log($"Skipping coin at Z={z:F1} in lane {LaneOfX(x)} due to nearby obstacle at Z={blockedLanes[LaneOfX(x)][i]:F1}");
-                            iCoinFactory.Spawn(new Vector3(x, coinHeight + 2.0f, z), Quaternion.identity, parent);
-                        }
-                        else
-                        {
-                            iCoinFactory.Spawn(new Vector3(x, coinHeight, z), Quaternion.identity, parent);
-                            Debug.Log($"Spawning coin at Z={z:F1} in lane {LaneOfX(x)} despite blocked lane because no nearby obstacle");
-                        }
-                    }
-                    
-                }
-                else
-                    iCoinFactory.Spawn(new Vector3(x, coinHeight, z), Quaternion.identity, parent);
+                // One coin per Z step. If the nearest obstacle in this lane is close enough,
+                // lift the coin into a jump arc that peaks over the obstacle's Z.
+                float y = coinHeight + ArcLift(blockedLanes, x, z - zStart);
+                iCoinFactory.Spawn(new Vector3(x, y, z), Quaternion.identity, parent);
                 z += coinSpacingZ;
             }
             _currentLane = _targetLane;
         }
         
-        bool IsInRange(float z1, float z2, float range)
+        /// <summary>
+        /// Extra height for a coin at relative Z <paramref name="relZ"/> in the lane nearest
+        /// <paramref name="x"/>. Returns 0 when no obstacle is within <see cref="arcHalfWidthZ"/>;
+        /// otherwise a smooth arc peaking at <see cref="jumpArcHeight"/> over the nearest obstacle's Z.
+        /// </summary>
+        float ArcLift(Dictionary<int, float[]> blockedLanes, float x, float relZ)
         {
-            Debug.Log($"Checking if Z={z1:F1} is within {range:F1} of Z={z2:F1}");
-            return Mathf.Abs(z1 - z2) <= range;
+            if (!IsLaneBlocked(blockedLanes, x)) return 0f;
+
+            float[] line = blockedLanes[LaneOfX(x)];
+            float nearestDz = float.PositiveInfinity;
+            for (int i = 0; i < line.Length; i++)
+            {
+                float obZ = line[i];
+                if (float.IsNaN(obZ)) continue; // empty slot, no obstacle here
+                float dz = Mathf.Abs(obZ - relZ);
+                if (dz < nearestDz) nearestDz = dz;
+            }
+
+            if (nearestDz > arcHalfWidthZ) return 0f;
+
+            // 1 at the obstacle's Z, easing to 0 at the arc edges (smoothstep for a soft curve).
+            float t = Mathf.SmoothStep(1f, 0f, nearestDz / arcHalfWidthZ);
+            return jumpArcHeight * t;
         }
 
         /// <summary>True when the lane nearest <paramref name="x"/> is flagged blocked.</summary>

@@ -67,10 +67,9 @@ namespace MagicVillageDash.Obstacles
                             var pos = new Vector3(x, parent.position.y, z);
 
                             obstacleFactory.Spawn(parent, pos, Quaternion.identity, true);
-                            if(blocked.ContainsKey(i))
-                                blocked[i][j] = z - zStart; // relative Z of the obstacle in this chunk
-                            else
-                                blocked.Add(i, new float[obstacleLinePerChunk]);
+                            if (!blocked.ContainsKey(i))
+                                blocked.Add(i, NewEmptyLine());
+                            blocked[i][j] = z - zStart; // relative Z of the obstacle in this chunk
                         }
                     }
                 }
@@ -133,6 +132,17 @@ namespace MagicVillageDash.Obstacles
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// A fresh per-lane line of obstacle slots, pre-filled with NaN so empty slots
+        /// are distinguishable from a real obstacle sitting at relative Z 0.
+        /// </summary>
+        float[] NewEmptyLine()
+        {
+            var line = new float[obstacleLinePerChunk];
+            for (int k = 0; k < line.Length; k++) line[k] = float.NaN;
+            return line;
         }
 
         int MidLane() => Mathf.Clamp(laneCount / 2, 0, laneCount - 1);
