@@ -15,6 +15,7 @@
   <Project Path="UnityEngine.UI.csproj" />
   <Project Path="Unity.Addressables.Editor.csproj" />
   <Project Path="Unity.Collections.csproj" />
+  <Project Path="MoreMountains.Tools.csproj" />
   <Project Path="Unity.VisualScripting.Core.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.Editor.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.2D.Runtime.csproj" />
@@ -46,6 +47,7 @@
   <Project Path="Unity.TextMeshPro.csproj" />
   <Project Path="Unity.TextMeshPro.Editor.csproj" />
   <Project Path="MagicVillageDash.Editor.csproj" />
+  <Project Path="Lofelt.NiceVibrations.Demo.csproj" />
   <Project Path="Unity.Burst.Editor.csproj" />
   <Project Path="Unity.Mobile.AndroidLogcat.Editor.csproj" />
   <Project Path="Unity.VisualScripting.State.csproj" />
@@ -53,14 +55,17 @@
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="UnityEditor.UI.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.2D.Editor.Overrides.csproj" />
+  <Project Path="MoreMountains.Tools.Editor.csproj" />
   <Project Path="Unity.2D.Sprite.Editor.csproj" />
   <Project Path="Unity.InternalAPIEditorBridge.013.csproj" />
   <Project Path="Unity.AI.Navigation.Editor.csproj" />
   <Project Path="Unity.Multiplayer.Center.Common.csproj" />
   <Project Path="Unity.InputSystem.ForUI.csproj" />
+  <Project Path="Lofelt.NiceVibrations.Editor.csproj" />
   <Project Path="Unity.AI.Navigation.csproj" />
   <Project Path="Unity.Collections.CodeGen.csproj" />
   <Project Path="Unity.Addressables.csproj" />
+  <Project Path="Lofelt.NiceVibrations.csproj" />
   <Project Path="Unity.Mathematics.Editor.csproj" />
   <Project Path="GoogleMobileAds.Editor.csproj" />
   <Project Path="Unity.VisualScripting.SettingsProvider.Editor.csproj" />
@@ -69,7 +74,9 @@
   <Project Path="Unity.InputSystem.TestFramework.csproj" />
   <Project Path="Unity.ShaderGraph.Utilities.csproj" />
   <Project Path="Unity.VisualScripting.Shared.Editor.csproj" />
+  <Project Path="PixeLadder.EasyTransition.csproj" />
   <Project Path="Unity.Profiling.Core.csproj" />
+  <Project Path="PixeLadder.EasyTransition.Editor.csproj" />
   <Project Path="Unity.CollabProxy.Editor.csproj" />
   <Project Path="Unity.RenderPipeline.Universal.ShaderLibrary.csproj" />
   <Project Path="Unity.InputSystem.DocCodeSamples.csproj" />

@@ -5,7 +5,8 @@
         "Unity.TextMeshPro",
         "ErccDev.Foundation",
         "Unity.InputSystem",
-        "Unity.Addressables"
+        "Unity.Addressables",
+        "PixeLadder.EasyTransition"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
