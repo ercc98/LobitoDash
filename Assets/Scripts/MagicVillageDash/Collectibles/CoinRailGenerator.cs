@@ -84,7 +84,40 @@ namespace MagicVillageDash.Collectibles
             }
             _currentLane = _targetLane;
         }
-        
+
+        /// <summary>
+        /// Lay a straight line of coins between two world positions, stepping along Z by
+        /// <see cref="coinSpacingZ"/> and interpolating X and Y so the line can run down a lane,
+        /// diagonally across lanes, and rise/fall in height (e.g. an arc over an obstacle).
+        /// Used by predefined <see cref="CoinSegment"/> markers; this does not touch the
+        /// automatic rail's lane state.
+        /// </summary>
+        public void FillLine(Transform parent, Vector3 startWorld, Vector3 endWorld)
+        {
+            EnsureFactory();
+            if (iCoinFactory == null) return;
+
+            // Always step from the lower Z to the higher Z.
+            if (endWorld.z < startWorld.z) (startWorld, endWorld) = (endWorld, startWorld);
+
+            float zStart = startWorld.z;
+            float zEnd   = endWorld.z;
+
+            if (zEnd - zStart < 0.0001f)
+            {
+                iCoinFactory.Spawn(startWorld, Quaternion.identity, parent);
+                return;
+            }
+
+            for (float z = zStart; z <= zEnd + 0.001f; z += coinSpacingZ)
+            {
+                float t = Mathf.InverseLerp(zStart, zEnd, z);
+                float x = Mathf.Lerp(startWorld.x, endWorld.x, t);
+                float y = Mathf.Lerp(startWorld.y, endWorld.y, t);
+                iCoinFactory.Spawn(new Vector3(x, y, z), Quaternion.identity, parent);
+            }
+        }
+
         /// <summary>
         /// Extra height for a coin at relative Z <paramref name="relZ"/> in the lane nearest
         /// <paramref name="x"/>. Returns 0 when no obstacle is within <see cref="arcHalfWidthZ"/>;
@@ -140,6 +173,13 @@ namespace MagicVillageDash.Collectibles
             if (_lastCoinZ == float.NegativeInfinity)
                 _lastCoinZ = startZ - coinSpacingZ;
 
+            EnsureFactory();
+        }
+
+        /// <summary>Resolve the coin factory once, lazily — works even if a predefined chunk fills first.</summary>
+        void EnsureFactory()
+        {
+            if (iCoinFactory != null) return;
             iCoinFactory = coinFactoryProvider as IFactory<CoinCollectible> ?? FindAnyObjectByType<CoinFactory>(FindObjectsInactive.Exclude);
         }
 
