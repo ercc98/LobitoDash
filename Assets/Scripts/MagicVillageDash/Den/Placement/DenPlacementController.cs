@@ -41,6 +41,8 @@ namespace MagicVillageDash.Den.Placement
         [SerializeField] private LayerMask slotMask = ~0;
         [SerializeField, Min(1f)] private float rayMaxDistance = 500f;
 
+        [Header("Particles")]
+        [SerializeField] private ParticleSystem placeParticles;
         private ModelCollectionEntry _selected;
         private readonly List<ModelCollectionEntry> _trayItems = new();
 
@@ -119,6 +121,8 @@ namespace MagicVillageDash.Den.Placement
         {
             slot.Build(_selected.modelPrefab);
             placement?.PlaceAt(slot.SlotId, _selected.entryId);
+            placeParticles?.transform.SetPositionAndRotation(slot.transform.position, placeParticles.transform.rotation);
+            placeParticles?.Play();
             GameDataService._instance?.SaveAll();
 
             _selected = null;
