@@ -53,3 +53,8 @@ MonoBehaviour:
     volume: 0.75
     volumeJitter: 0
     pitchJitter: 0
+  - id: Landing
+    clip: {fileID: 8300000, guid: 790b9f3d412223c4992a8382f152b94d, type: 3}
+    volume: 0.75
+    volumeJitter: 0
+    pitchJitter: 0

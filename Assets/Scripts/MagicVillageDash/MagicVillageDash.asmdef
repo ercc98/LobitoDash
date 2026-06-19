@@ -6,7 +6,8 @@
         "ErccDev.Foundation",
         "Unity.InputSystem",
         "Unity.Addressables",
-        "PixeLadder.EasyTransition"
+        "PixeLadder.EasyTransition",
+        "MoreMountains.Tools"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

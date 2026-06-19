@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using ErccDev.Foundation.Core.Collection;
 using MagicVillageDash.Collections;
 using MagicVillageDash.Data;
+using MoreMountains.Feedbacks;
+using MagicVillageDash.Audio;
 
 namespace MagicVillageDash.Den.Placement
 {
@@ -43,6 +45,8 @@ namespace MagicVillageDash.Den.Placement
 
         [Header("Particles")]
         [SerializeField] private ParticleSystem placeParticles;
+        [SerializeField] private MMF_Player TargetMMF_Player;
+        [SerializeField] private AudioManager audioManager;
         private ModelCollectionEntry _selected;
         private readonly List<ModelCollectionEntry> _trayItems = new();
 
@@ -123,6 +127,8 @@ namespace MagicVillageDash.Den.Placement
             placement?.PlaceAt(slot.SlotId, _selected.entryId);
             placeParticles?.transform.SetPositionAndRotation(slot.transform.position, placeParticles.transform.rotation);
             placeParticles?.Play();
+            TargetMMF_Player?.PlayFeedbacks();
+            audioManager?.Play(SfxId.Landing);
             GameDataService._instance?.SaveAll();
 
             _selected = null;

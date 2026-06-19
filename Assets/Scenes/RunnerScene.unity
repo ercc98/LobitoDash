@@ -1882,7 +1882,7 @@ MonoBehaviour:
   laneWidth: 2.2
   laneCenterX: 0
   obstacleChancePerLane: 0.455
-  obstacleLinePerChunk: 2
+  obstacleLinePerChunk: 1
   ensureAtLeastOneSafeLane: 1
 --- !u!4 &161715504
 Transform:
@@ -43230,7 +43230,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 375
+    m_Bits: 119
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 0
   m_Enabled: 1

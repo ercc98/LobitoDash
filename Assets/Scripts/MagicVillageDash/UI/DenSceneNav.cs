@@ -17,7 +17,7 @@ namespace MagicVillageDash.UI
         [SerializeField] private string collectionSceneName = "CollectionScene";
         [SerializeField] private string denSceneName  = "DenScene";
 
-        public void Race() => Go(runnerSceneName, UIId.Accept);
+        public void Race() => Go(runnerSceneName, UIId.Continue);
         public void Home() => Go(introSceneName, UIId.Back);
         public void Colleciton() => Go(collectionSceneName, UIId.Continue);
         public void Den() => Go(denSceneName,  UIId.Continue);
