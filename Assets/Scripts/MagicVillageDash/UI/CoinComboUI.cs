@@ -54,7 +54,8 @@ namespace MagicVillageDash.UI
         public void RegisterCoinPickup(int amount = 1)
         {
             _coinsInCombo++;
-            int currentCombo = _coinsInCombo / 10 + 1;
+            coinComboAnimator.SetTrigger("LevelUp");
+            int currentCombo = _coinsInCombo / 20 + 1;
             if (currentCombo > _currentCombo && coinComboAnimator != null)
             {
                 coinComboAnimator.SetTrigger("LevelUp");

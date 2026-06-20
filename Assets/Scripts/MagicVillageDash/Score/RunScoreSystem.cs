@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 using ErccDev.Foundation.Core.Save;
-using MagicVillageDash.Data; // SaveService
+using MagicVillageDash.Data;
+using ErccDev.Foundation.Core.Notifications; // SaveService
 
 namespace MagicVillageDash.Score
 {
@@ -29,10 +30,18 @@ namespace MagicVillageDash.Score
         public float BestDistance       => bestDistance;
         public int   BestCoins          => bestCoins;
 
+        public bool HasBestScore => bestScore > 0;
+        public bool HasBestDistance => bestDistance > 0f;
+        public bool HasBestCoins => bestCoins > 0;
+
+        private bool isFirstCongratzForBestScore = true;
+        private bool isFirstCongratzForBestDistanc = true;
+        private bool isFirstCongratzForBestCoins = true;
 
         public event Action<int>   OnScoreChanged;
         public event Action<int>   OnBestScoreChanged;
         public event Action<float> OnBestDistanceChanged;
+        public event Action<int>   OnBestCoinsChanged;
 
         public RunStatsData runStatsData;
 
@@ -62,6 +71,25 @@ namespace MagicVillageDash.Score
         void Update()
         {
             RecomputeScore(distanceTracker.CurrentDistance);
+            float dist = distanceTracker != null ? distanceTracker.CurrentDistance : 0f;
+            int   c    = coinCounter != null ? coinCounter.Coins : 0;
+            if (isFirstCongratzForBestScore && currentScore > bestScore && HasBestScore)
+            {
+                OnBestScoreChanged?.Invoke(bestScore);
+                isFirstCongratzForBestScore = false;
+            }
+
+            if (isFirstCongratzForBestDistanc && dist > bestDistance && HasBestDistance)
+            {
+                OnBestDistanceChanged?.Invoke(bestDistance);
+                isFirstCongratzForBestDistanc = false;
+            }
+
+            if (isFirstCongratzForBestCoins && c > bestCoins && HasBestCoins)
+            {
+                OnBestCoinsChanged?.Invoke(bestCoins);
+                isFirstCongratzForBestCoins = false;
+            }
         }
 
         void RecomputeScore(float meters)
@@ -94,20 +122,22 @@ namespace MagicVillageDash.Score
             {
                 bestScore = currentScore;
                 changed = true;
-                OnBestScoreChanged?.Invoke(bestScore);
+                //OnBestScoreChanged?.Invoke(bestScore);
+                
             }
 
             if (dist > bestDistance)
             {
                 bestDistance = dist;
                 changed = true;
-                OnBestDistanceChanged?.Invoke(bestDistance);
+                //OnBestDistanceChanged?.Invoke(bestDistance);
             }
 
             if (c > bestCoins)
             {
                 bestCoins = c;
                 changed = true;
+                //OnBestCoinsChanged?.Invoke(bestCoins);
             }
 
             if (changed)
