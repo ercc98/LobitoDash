@@ -6,6 +6,8 @@ using MagicVillageDash.Audio;
 using MagicVillageDash.Character;
 using MagicVillageDash.Character.CharacterAnimator;
 using MagicVillageDash.Runner;
+using MagicVillageDash.World;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 namespace MagicVillageDash.Enemy
@@ -18,8 +20,9 @@ namespace MagicVillageDash.Enemy
         [SerializeField] private CharacterController playerCharacterController;
         [SerializeField] private int coinsOnDeath = 1;
         [SerializeField] private Vector3 rewardOffset = Vector3.up;
-
-        
+        [SerializeField] private DeathDrift deathDrift;
+        [SerializeField] private MMF_Player MMFStart;
+        [SerializeField] private MMF_Player MMFEnd;
 
         [Header("Safety")]
         [Tooltip("Failsafe: if something goes wrong, collisions auto-reenable after this many seconds.")]
@@ -57,6 +60,7 @@ namespace MagicVillageDash.Enemy
             GameEvents.GameOver += OnGameOver;
             BeginNonCollidingSelfCCWindow();
             AudioManager.Instance?.Play("Bark", SoundCategory.Voice);
+            MMFStart?.PlayFeedbacks();
         }
 
         private void BeginNonCollidingSelfCCWindow()
@@ -115,13 +119,15 @@ namespace MagicVillageDash.Enemy
 
         protected override void OnHazardHitInternal(Vector3 hazardHitPosition)
         {
-            OnReward?.Invoke(coinsOnDeath, transform.position + rewardOffset);
+            OnReward?.Invoke(coinsOnDeath, transform.position + rewardOffset);            
             StartCoroutine(WaitForDie(0.5f));
         }
 
         private IEnumerator WaitForDie(float t)
         {
-            yield return new WaitForSeconds(t);
+            MMFEnd?.PlayFeedbacks();
+            if (deathDrift != null) yield return deathDrift.Drift(); // attach → wait → detach
+            yield return new WaitForSeconds(t);            
             Ondied?.Invoke(this);
             gameObject.SetActive(false);
         }

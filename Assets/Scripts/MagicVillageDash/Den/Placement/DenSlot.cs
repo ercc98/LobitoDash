@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 namespace MagicVillageDash.Den.Placement
@@ -20,6 +21,7 @@ namespace MagicVillageDash.Den.Placement
 
         [Tooltip("Where the structure is parented/spawned. Defaults to this transform.")]
         [SerializeField] private Transform anchor;
+        [SerializeField] private MMF_Player TargetMMF_Player;
 
         /// <summary>Persisted id — never changes once items have been saved against it.</summary>
         public string SlotId => string.IsNullOrEmpty(slotId) ? name : slotId;
@@ -50,6 +52,7 @@ namespace MagicVillageDash.Den.Placement
             var at = anchor != null ? anchor : transform;
             Placed = Instantiate(prefab, at.position, at.rotation, at);
             BuildTapBody();
+            TargetMMF_Player?.PlayFeedbacks();
             return Placed;
         }
 
