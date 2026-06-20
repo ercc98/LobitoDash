@@ -14,7 +14,8 @@ namespace MagicVillageDash.Character
         [SerializeField] protected CharacterAnimatorController selfAnimatorControllerProvider; 
         [SerializeField] protected ParticleSystem hitHazardParticlesProvider;
         [SerializeField] protected ParticleSystem turnRightParticles;
-        [SerializeField] protected ParticleSystem turnLeftParticles;
+        [SerializeField] protected ParticleSystem turnLeftParticles;     
+        [SerializeField] protected ParticleSystem landingDustParticles;   
         [SerializeField] protected MonoBehaviour gameSpeedProvider;
 
         protected ILaneMover selfLaneMover;
@@ -38,6 +39,8 @@ namespace MagicVillageDash.Character
         protected virtual void OnEnable()
         {
             selfMovementAnimator.Walk(true);
+            landingDustParticles.transform.position = transform.position + Vector3.up * -0.5f; 
+            landingDustParticles?.Play();
         }
 
         public virtual void TurnLeft()
@@ -73,8 +76,10 @@ namespace MagicVillageDash.Character
         {
             selfLaneMover.Jump();
             selfMovementAnimator.Jump();
-            
+
         }
+        
+        
 
         public virtual void Defend(bool isDefending)
         {

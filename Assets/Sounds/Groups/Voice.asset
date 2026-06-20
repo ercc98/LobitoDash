@@ -23,3 +23,28 @@ MonoBehaviour:
     volume: 0.5
     volumeJitter: 0
     pitchJitter: 0
+  - id: Howl
+    clip: {fileID: 8300000, guid: 830844770cd29f94b85b348df9613585, type: 3}
+    volume: 0.5
+    volumeJitter: 0
+    pitchJitter: 0
+  - id: Scratch
+    clip: {fileID: 8300000, guid: 830844770cd29f94b85b348df9613585, type: 3}
+    volume: 0.5
+    volumeJitter: 0
+    pitchJitter: 0
+  - id: Yawm
+    clip: {fileID: 8300000, guid: 830844770cd29f94b85b348df9613585, type: 3}
+    volume: 0.5
+    volumeJitter: 0
+    pitchJitter: 0
+  - id: Dig
+    clip: {fileID: 8300000, guid: 830844770cd29f94b85b348df9613585, type: 3}
+    volume: 0.5
+    volumeJitter: 0
+    pitchJitter: 0
+  - id: Celebration
+    clip: {fileID: 8300000, guid: ff1100e6c46bc3443a0264aefeb71f10, type: 3}
+    volume: 0.5
+    volumeJitter: 0
+    pitchJitter: 0

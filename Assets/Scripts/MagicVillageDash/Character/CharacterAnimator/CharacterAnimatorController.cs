@@ -6,7 +6,13 @@ namespace MagicVillageDash.Character.CharacterAnimator
     {
         [SerializeField] private Animator animatorController;
         public Animator AnimatorController { private get => animatorController; set => animatorController = value; }
-        
+        [SerializeField] protected ParticleSystem landingDustParticles;
+        public void LandingDust()
+        {
+            landingDustParticles.transform.position = transform.position + Vector3.up * 0.1f; 
+            landingDustParticles?.Play();
+
+        }  
         bool IsJumping()
         {
             return animatorController.GetCurrentAnimatorStateInfo(0).IsName("Jump");
