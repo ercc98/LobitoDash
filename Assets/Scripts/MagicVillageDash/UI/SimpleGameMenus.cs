@@ -24,6 +24,8 @@ namespace MagicVillageDash.UI
         [SerializeField] private DistanceTracker distanceCounterProvider;
         [SerializeField] private string distanceFormat = "{0} m"; // e.g., "123 m" 
         [SerializeField] private RunScoreSystem runScoreSystemProvider;
+        [Tooltip("Plays the new-best particle bursts when the panel opens. Optional.")]
+        [SerializeField] private BestRecordCelebrator recordCelebrator;
         bool _started;
         bool _ended;
         ICoinCounter coinCounter;
@@ -69,7 +71,7 @@ namespace MagicVillageDash.UI
         {
             // Restart current scene (use SceneLoader if you prefer)
             Time.timeScale = 1f;
-            AudioManager.Instance.Play(UIId.Continue);
+            AudioManager.Instance.Play(UIId.Continue);            
             SceneLoader.Instance.LoadSceneAsync(SceneManager.GetActiveScene().name);
             //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
             
@@ -93,8 +95,13 @@ namespace MagicVillageDash.UI
         IEnumerator WaitToGameOverPanel()
         {
             yield return new WaitForSeconds(2f);
+            // Every Nth finished game this shows an interstitial; otherwise it's a no-op.
+            AdMobScripts.Interstitial.Instance?.TryShow();
+            yield return new WaitForSeconds(0.5f);
             SetPanel(gameOverPanel, true);
             Time.timeScale = 0f;
+            // Fire the new-best bursts now, with the panel (records were captured at game over).
+            if (recordCelebrator != null) recordCelebrator.ShowPendingCelebrations();
         }
 
         void OnGameStarted() {  }

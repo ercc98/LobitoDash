@@ -79,12 +79,10 @@ namespace MagicVillageDash.Character.Interaction
             var ray = tapCamera.ScreenPointToRay(screenPos);
             if (!Physics.Raycast(ray, out var hit, rayMaxDistance, tapMask, QueryTriggerInteraction.Collide))
             {
-                Debug.Log("[WolfTap] ray hit NOTHING (check tapCamera and tapMask).", this);
                 return;
             }
             if (hit.collider != tapCollider)
             {
-                Debug.Log($"[WolfTap] hit is not the wolf collider ('{tapCollider.name}'). Something is in front.", this);
                 return;
             }
             nextReactTime = Time.unscaledTime + cooldown;

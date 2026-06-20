@@ -1,13 +1,25 @@
 using UnityEngine;
-using GoogleMobileAds;
 using GoogleMobileAds.Api;
+using ErccDev.Foundation.Core.Gameplay;
 
 namespace MagicVillageDash.AdMobScripts
 {
+    /// <summary>
+    /// Loads and shows AdMob interstitials, gated to once every <see cref="gamesPerAd"/> finished runs.
+    /// Counts each <see cref="GameEvents.GameOver"/>; the restart flow calls <see cref="TryShow"/>, which
+    /// shows an ad (and resets the counter) only when enough games have passed and an ad is ready. A fresh
+    /// ad is preloaded after each show so the next one is ready in time.
+    /// </summary>
     public class Interstitial : MonoBehaviour
     {
+        [Tooltip("AdMob interstitial unit id. The default is Google's TEST id — replace before release.")]
+        [SerializeField] private string adUnitId = "ca-app-pub-3940256099942544/1033173712";
+        [Tooltip("Show an interstitial once every N finished games.")]
+        [SerializeField, Min(1)] private int gamesPerAd = 3;
+
         public static Interstitial Instance { get; private set; }
         private InterstitialAd interstitialAd;
+        private int gamesSinceAd;
 
         void Awake()
         {
@@ -19,80 +31,102 @@ namespace MagicVillageDash.AdMobScripts
             else if (Instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
+
+            GameEvents.GameOver += OnGameOver;
         }
-        
+
         public void Start()
         {
-            // Initialize Google Mobile Ads Unity Plugin.
-            MobileAds.Initialize((InitializationStatus initStatus) =>
-            {
-                RequestInterstitial();
-            });
-            
-
-            if (interstitialAd != null && interstitialAd.CanShowAd())
-            {
-                RegisterEventHandlers();
-                interstitialAd.Show();
-            }
+            // Initialize the SDK once, then keep an ad warm.
+            MobileAds.Initialize((InitializationStatus initStatus) => RequestInterstitial());
         }
+
+        /// <summary>Each finished run counts toward the next ad.</summary>
+        private void OnGameOver() => gamesSinceAd++;
+
+        /// <summary>
+        /// Show an interstitial if enough games have passed since the last one. Call this from the
+        /// restart flow. Returns true if an ad was actually shown.
+        /// </summary>
+        public bool TryShow()
+        {
+            if (gamesSinceAd < gamesPerAd)
+                return false;
+
+            if (interstitialAd == null || !interstitialAd.CanShowAd())
+            {
+                // Not ready yet — don't make the player wait; just make sure one is loading for next time.
+                RequestInterstitial();
+                return false;
+            }
+
+            gamesSinceAd = 0;
+            interstitialAd.Show();
+            return true;
+        }
+
         public void RequestInterstitial()
         {
-            // Create our request used to load the ad.
-            var adRequest = new AdRequest();
-
-            // Send the request to load the ad.
-            InterstitialAd.Load("ca-app-pub-3940256099942544/1033173712", adRequest, (InterstitialAd ad, LoadAdError error) =>
+            // Drop any stale ad before loading a fresh one.
+            if (interstitialAd != null)
             {
-                if (error != null)
+                interstitialAd.Destroy();
+                interstitialAd = null;
+            }
+
+            var adRequest = new AdRequest();
+            InterstitialAd.Load(adUnitId, adRequest, (InterstitialAd ad, LoadAdError error) =>
+            {
+                if (error != null || ad == null)
                 {
-                    Debug.LogError("Interstitial ad failed to load with error: " + error.GetMessage());
-                    // The ad failed to load.
+                    Debug.LogError("Interstitial ad failed to load with error: " + error?.GetMessage());
                     return;
                 }
-                // The ad loaded successfully.
+
                 interstitialAd = ad;
+                RegisterEventHandlers(ad);
             });
-            
         }
 
-        public void RegisterEventHandlers()
+        private void RegisterEventHandlers(InterstitialAd ad)
         {
-            interstitialAd.OnAdPaid += (AdValue adValue) =>
+            ad.OnAdPaid += (AdValue adValue) =>
             {
                 // Raised when the ad is estimated to have earned money.
             };
-            interstitialAd.OnAdImpressionRecorded += () =>
+            ad.OnAdImpressionRecorded += () =>
             {
                 // Raised when an impression is recorded for an ad.
             };
-            interstitialAd.OnAdClicked += () =>
+            ad.OnAdClicked += () =>
             {
                 // Raised when a click is recorded for an ad.
             };
-            interstitialAd.OnAdFullScreenContentOpened += () =>
+            ad.OnAdFullScreenContentOpened += () =>
             {
                 // Raised when the ad opened full screen content.
             };
-            interstitialAd.OnAdFullScreenContentClosed += () =>
+            ad.OnAdFullScreenContentClosed += () =>
             {
-                // Raised when the ad closed full screen content.
+                // Closed — preload the next ad so it's ready for the next cycle.
+                RequestInterstitial();
             };
-            interstitialAd.OnAdFullScreenContentFailed += (AdError error) =>
+            ad.OnAdFullScreenContentFailed += (AdError error) =>
             {
-                // Raised when the ad failed to open full screen content.
+                // Failed to open — try to get a fresh ad ready.
+                RequestInterstitial();
             };
         }
 
         void OnDestroy()
         {
+            if (Instance == this)
+                GameEvents.GameOver -= OnGameOver;
+
             if (interstitialAd != null)
-            {
                 interstitialAd.Destroy();
-            }
         }
-
-
     }
 }

@@ -89,6 +89,7 @@ namespace MagicVillageDash.Runner
             chunkSpawnerRunner = chunkSpawnerProvider as IChunkSpawnerRunner ?? chunkSpawnerProvider.GetComponent<IChunkSpawnerRunner>();
             enemySpawnPermission = enemyspawnPermissionProvider as IEnemySpawnPermission ?? enemyspawnPermissionProvider.GetComponent<IEnemySpawnPermission>();
             swipeInput = swipeInputProvider as ISwipeInput ?? swipeInputProvider.GetComponent<ISwipeInput>();
+            runnerInputControllerProvider.gameObject.SetActive(false);
         }
 
         void OnEnable()
@@ -134,7 +135,8 @@ namespace MagicVillageDash.Runner
 
         private void OnGameStarted()
         {
-            Debug.Log("RunController: OnGameStarted called");
+            Debug.Log("Game Started!");
+            runnerInputControllerProvider.gameObject.SetActive(true);
             AudioManager.Instance?.PlayLoop(MusicId.GameTheme3);
             AudioManager.Instance?.PlayLoop(AmbientId.Ambient1);
             coinCounter?.ResetCoins(0);
@@ -178,6 +180,8 @@ namespace MagicVillageDash.Runner
 
         private void OnGameOver()
         {
+            Debug.Log("Game Over!");
+            
             AudioManager.Instance?.StopLoop(SoundCategory.Music);
             AudioManager.Instance?.StopLoop(SoundCategory.Ambient);
             distanceTracker?.StopRun();

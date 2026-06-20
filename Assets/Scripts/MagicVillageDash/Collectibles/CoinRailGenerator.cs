@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ErccDev.Foundation.Core.Factories;
+using MagicVillageDash.World;
 using UnityEngine;
 
 namespace MagicVillageDash.Collectibles
@@ -16,8 +17,21 @@ namespace MagicVillageDash.Collectibles
         [SerializeField] private float laneWidth = 2.5f;  // distance between lane centers
         [SerializeField] private float laneCenterX = 0f;  // middle lane X
 
-        [Header("Rail Shape")]
-        [SerializeField] private float coinSpacingZ = 1.8f;    // distance between coins along Z
+        [Header("Spawn Chance")]
+        [Range(0, 1)]
+        [Tooltip("Chance per chunk that coins are generated at all. 1 = always coins, 0 = never; lower it to leave some chunks coin-free.")]
+        [SerializeField] private float coinChunkChance = 1f;
+
+        [Header("Rail Shape — Z spacing scales with game speed")]
+        [Tooltip("Coin spacing held until the ramp threshold; the rail's base spacing.")]
+        [SerializeField] private float baseCoinSpacingZ = 3f;   // distance between coins along Z at/below threshold
+        [Tooltip("Coin spacing when the game is at max speed.")]
+        [SerializeField] private float maxCoinSpacingZ = 10f;   // distance between coins along Z at max speed
+        [Tooltip("Fraction of max speed below which spacing stays at base. " +
+                 "0.5 = spacing only starts widening past half of max speed.")]
+        [Range(0f, 1f)] [SerializeField] private float spacingRampStartFraction = 0.5f;
+        [Tooltip("Speed source. Auto-found in the scene if left empty.")]
+        [SerializeField] private MonoBehaviour speedProvider;  // IGameSpeedController
         [SerializeField] private float minStraightZ = 8f;      // min straight distance before a turn
         [SerializeField] private float maxStraightZ = 18f;     // max straight distance before a turn
         [SerializeField] private float transitionLengthZ = 12f;// how long to move from lane A to B
@@ -32,6 +46,7 @@ namespace MagicVillageDash.Collectibles
         [SerializeField] private float arcHalfWidthZ = 3.6f;
 
         // ---- Runtime state (persistent across chunk fills) ----
+        IGameSpeedController _speed;
         float _lastCoinZ = float.NegativeInfinity;
         bool  _initialized;
         int   _currentLane;    // 0..laneCount-1
@@ -42,13 +57,40 @@ namespace MagicVillageDash.Collectibles
 
         enum SegmentType { Straight, Transition }
 
+        /// <summary>
+        /// Current Z gap between coins, driven by game speed: held at <see cref="baseCoinSpacingZ"/>
+        /// until speed passes <see cref="spacingRampStartFraction"/> of max speed, then ramping to
+        /// <see cref="maxCoinSpacingZ"/> by max speed. Falls back to the base when no speed source.
+        /// </summary>
+        float CurrentSpacingZ
+        {
+            get
+            {
+                EnsureSpeed();
+                if (_speed == null) return baseCoinSpacingZ;
+
+                float hi = _speed.MaxSpeed;
+                float lo = Mathf.Max(_speed.BaseSpeed, hi * spacingRampStartFraction);
+                float t = hi <= lo ? 0f : Mathf.Clamp01((_speed.CurrentSpeed - lo) / (hi - lo));
+                return Mathf.Lerp(baseCoinSpacingZ, maxCoinSpacingZ, t);
+            }
+        }
+
+        /// <summary>Resolve the speed source once, lazily.</summary>
+        void EnsureSpeed()
+        {
+            if (_speed != null) return;
+            _speed = speedProvider as IGameSpeedController
+                  ?? FindAnyObjectByType<GameSpeedController>(FindObjectsInactive.Exclude);
+        }
+
         // ------------- Public API -------------
 
         /// <summary>Call when a new run starts, giving the Z to start generating from (e.g., player.z).</summary>
         public void ResetPathAt(float startZ)
         {
             _initialized  = false;
-            _lastCoinZ    = startZ - coinSpacingZ; // so first coin can spawn near start
+            _lastCoinZ    = startZ - CurrentSpacingZ; // so first coin can spawn near start
             _currentLane  = MidLane();
             _targetLane   = _currentLane;
             _segStartZ    = startZ;
@@ -67,7 +109,17 @@ namespace MagicVillageDash.Collectibles
         {
             if (!_initialized) InitializeAt(zStart);
 
+            // Roll per chunk: maybe leave this stretch coin-free for pacing variety.
+            // Still advance the rail's lane plan so the path stays continuous across the gap.
+            if (coinChunkChance < 1f && Random.value >= coinChunkChance)
+            {
+                PlanNextSegment(zStart);
+                _currentLane = _targetLane;
+                return;
+            }
+
             float z = zStart;
+            float spacing = CurrentSpacingZ; // fixed for this chunk fill
             PlanNextSegment(zStart);
             while (z < zEnd)
             {
@@ -80,14 +132,14 @@ namespace MagicVillageDash.Collectibles
                 // lift the coin into a jump arc that peaks over the obstacle's Z.
                 float y = coinHeight + ArcLift(blockedLanes, x, z - zStart);
                 iCoinFactory.Spawn(new Vector3(x, y, z), Quaternion.identity, parent);
-                z += coinSpacingZ;
+                z += spacing;
             }
             _currentLane = _targetLane;
         }
 
         /// <summary>
         /// Lay a straight line of coins between two world positions, stepping along Z by
-        /// <see cref="coinSpacingZ"/> and interpolating X and Y so the line can run down a lane,
+        /// <see cref="CurrentSpacingZ"/> and interpolating X and Y so the line can run down a lane,
         /// diagonally across lanes, and rise/fall in height (e.g. an arc over an obstacle).
         /// Used by predefined <see cref="CoinSegment"/> markers; this does not touch the
         /// automatic rail's lane state.
@@ -109,7 +161,8 @@ namespace MagicVillageDash.Collectibles
                 return;
             }
 
-            for (float z = zStart; z <= zEnd + 0.001f; z += coinSpacingZ)
+            float spacing = CurrentSpacingZ; // fixed for this line
+            for (float z = zStart; z <= zEnd + 0.001f; z += spacing)
             {
                 float t = Mathf.InverseLerp(zStart, zEnd, z);
                 float x = Mathf.Lerp(startWorld.x, endWorld.x, t);
@@ -171,7 +224,7 @@ namespace MagicVillageDash.Collectibles
             _segEndZ     = startZ + Random.Range(minStraightZ, maxStraightZ);
             _initialized = true;
             if (_lastCoinZ == float.NegativeInfinity)
-                _lastCoinZ = startZ - coinSpacingZ;
+                _lastCoinZ = startZ - CurrentSpacingZ;
 
             EnsureFactory();
         }
