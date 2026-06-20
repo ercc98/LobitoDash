@@ -18,6 +18,8 @@ namespace MagicVillageDash.World
             private set => currentSpeed = value;
         }
 
+        public float BaseSpeed => baseSpeed;
+
         public float MaxSpeed
         {
             get => maxSpeed;

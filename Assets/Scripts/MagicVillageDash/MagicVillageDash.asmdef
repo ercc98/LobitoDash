@@ -3,6 +3,7 @@
     "rootNamespace": "MagicVillageDash",
     "references": [
         "Unity.TextMeshPro",
+        "Unity.Cinemachine",
         "ErccDev.Foundation",
         "Unity.InputSystem",
         "Unity.Addressables",
